@@ -251,6 +251,7 @@ h3 { margin-bottom: 0; color: var(--ink); font-size: 1.05rem; line-height: 1.25;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center;
   opacity: 0;
   transform: scale(1.015);
   transition: opacity 260ms ease, transform 420ms ease;
@@ -1284,4 +1285,184 @@ section[id],
   }
   .lightbox-prev { left: 12px; }
   .lightbox-next { right: 12px; }
+}
+
+/* Mobile overflow hardening */
+html,
+body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  position: relative;
+}
+
+img,
+svg,
+video {
+  max-width: 100%;
+  height: auto;
+}
+
+main,
+section,
+.site-header,
+.footer,
+.container,
+.nav,
+.request-form,
+.truck-card,
+.contact-card,
+.video-frame,
+.hero,
+.order,
+.why {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  html,
+  body {
+    overflow-x: hidden;
+    touch-action: pan-y;
+  }
+
+  .container,
+  .nav {
+    width: 100%;
+    max-width: 100%;
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
+  .hero,
+  .order,
+  .why,
+  .services,
+  .inventory,
+  .contact,
+  .footer {
+    overflow-x: hidden;
+  }
+
+  .hero::after,
+  .road-lines,
+  .why::after,
+  .order::after,
+  .video-frame::before {
+    display: none;
+  }
+
+  .hero-grid,
+  .split,
+  .contact-layout,
+  .stats-grid,
+  .inventory-grid,
+  .form-grid,
+  .request-type-grid,
+  .footer-main {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .request-type-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .request-option,
+  .request-option span,
+  .form-grid label,
+  .request-form input,
+  .request-form textarea,
+  .btn,
+  .truck-card,
+  .contact-card a,
+  .contact-card p,
+  .contact-card .address-link {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .hero-actions,
+  .form-actions {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .gallery-track,
+  .truck-gallery,
+  .gallery-slide {
+    max-width: 100%;
+  }
+
+  .footer {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .footer-main,
+  .footer-bottom {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .footer-brand,
+  .footer-links,
+  .footer-contact,
+  .footer-bottom,
+  .footer-bottom span,
+  .footer-brand p,
+  .footer-contact a,
+  .footer-links a {
+    min-width: 0;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    word-break: normal;
+  }
+
+  .footer-bottom {
+    padding-right: 68px;
+  }
+
+  .footer-bottom span:last-child {
+    max-width: 100%;
+    text-align: left;
+  }
+
+  .whatsapp-float {
+    right: 12px;
+    bottom: 12px;
+    max-width: calc(100vw - 24px);
+  }
+
+  .image-lightbox {
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+  }
+}
+
+@media (max-width: 390px) {
+  .container,
+  .nav {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
+  .request-type-grid {
+    gap: 8px;
+  }
+
+  .request-option span {
+    padding-left: 8px;
+    padding-right: 8px;
+    font-size: 0.78rem;
+  }
+
+  .footer-bottom {
+    padding-right: 62px;
+    font-size: 0.68rem;
+  }
 }
