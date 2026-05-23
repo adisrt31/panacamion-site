@@ -88,10 +88,12 @@ function showLightboxImage(index) {
   const image = lightboxSlides[lightboxIndex];
   lightboxImage.src = image.src;
   lightboxImage.alt = image.alt;
+  lightbox?.classList.toggle('is-product-zoom', Boolean(image.productZoom));
 }
 
 function closeLightbox() {
   lightbox?.classList.remove('is-open');
+  lightbox?.classList.remove('is-product-zoom');
   lightbox?.setAttribute('aria-hidden', 'true');
 }
 
@@ -136,7 +138,8 @@ document.querySelectorAll('[data-open-image]').forEach((button) => {
 
     lightboxSlides = [{
       src: button.getAttribute('data-open-image'),
-      alt: button.getAttribute('data-image-alt') || 'Imagen ampliada'
+      alt: button.getAttribute('data-image-alt') || 'Imagen ampliada',
+      productZoom: true
     }];
     showLightboxImage(0);
     lightbox.classList.add('is-open');
