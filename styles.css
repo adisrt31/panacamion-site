@@ -1955,3 +1955,26 @@ main {
     font-size: clamp(1.75rem, 8vw, 2.35rem);
   }
 }
+
+/* Mobile-only product graphic zoom button */
+.product-graphic-zoom {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .product-graphic-zoom {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 48px;
+    margin-top: 14px;
+    border: 2px solid var(--red);
+    border-radius: var(--radius);
+    background: var(--red);
+    color: var(--white);
+    font: inherit;
+    font-weight: 860;
+    box-shadow: 0 16px 34px rgba(255, 0, 60, 0.24);
+  }
+}

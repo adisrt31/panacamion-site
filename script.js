@@ -129,3 +129,17 @@ function updateHeaderScrollState() {
 
 updateHeaderScrollState();
 window.addEventListener('scroll', updateHeaderScrollState, { passive: true });
+
+document.querySelectorAll('[data-open-image]').forEach((button) => {
+  button.addEventListener('click', () => {
+    if (!lightbox) return;
+
+    lightboxSlides = [{
+      src: button.getAttribute('data-open-image'),
+      alt: button.getAttribute('data-image-alt') || 'Imagen ampliada'
+    }];
+    showLightboxImage(0);
+    lightbox.classList.add('is-open');
+    lightbox.setAttribute('aria-hidden', 'false');
+  });
+});
