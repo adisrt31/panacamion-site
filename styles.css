@@ -1855,3 +1855,103 @@ main {
     border-radius: 16px;
   }
 }
+
+/* Match process video glass card to hero panel */
+.video-message-card {
+  position: relative;
+  padding: 20px 22px 22px;
+  border: 1px solid rgba(255,255,255,0.16);
+  border-radius: var(--radius);
+  background: linear-gradient(180deg, rgba(255,255,255,0.13), rgba(255,255,255,0.06));
+  box-shadow: 0 24px 70px rgba(0,0,0,0.26);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.video-message-card::before {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 72px;
+  height: 4px;
+  content: "";
+  background: var(--red);
+}
+
+.video-message-card span {
+  margin-bottom: 12px;
+}
+
+.video-message-card strong {
+  margin-bottom: 12px;
+  font-size: clamp(1.9rem, 4vw, 3.1rem);
+  line-height: 1.02;
+}
+
+.video-message-card p {
+  margin: 0;
+  color: rgba(255,255,255,0.72);
+}
+
+/* Process video card headline refinement */
+.video-message-card strong {
+  font-size: clamp(1.55rem, 3vw, 2.45rem);
+  line-height: 1.08;
+}
+
+/* Day Cab product graphic section */
+.product-graphic-section {
+  background: var(--soft);
+}
+
+.product-graphic-wrap {
+  display: flex;
+  justify-content: center;
+}
+
+.product-graphic-wrap img {
+  display: block;
+  width: 100%;
+  max-width: 1200px;
+  height: auto;
+  border-radius: 18px;
+  box-shadow: 0 24px 70px rgba(23, 35, 50, 0.14);
+}
+
+@media (max-width: 640px) {
+  .product-graphic-wrap img {
+    max-width: 100%;
+    border-radius: 12px;
+  }
+}
+
+/* Product graphic section heading */
+.product-graphic-heading {
+  max-width: 980px;
+  margin-bottom: 34px;
+}
+
+.product-graphic-heading h2 {
+  max-width: 980px;
+}
+
+/* Product graphic heading spacing refinement */
+.product-graphic-heading {
+  margin-bottom: 44px;
+}
+
+.product-graphic-heading h2 {
+  max-width: 1080px;
+  font-size: clamp(2rem, 3.35vw, 3.15rem);
+  line-height: 1.08;
+}
+
+@media (max-width: 640px) {
+  .product-graphic-heading {
+    margin-bottom: 28px;
+  }
+
+  .product-graphic-heading h2 {
+    font-size: clamp(1.75rem, 8vw, 2.35rem);
+  }
+}
