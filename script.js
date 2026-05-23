@@ -120,3 +120,12 @@ document.addEventListener('keydown', (event) => {
   if (lightbox?.classList.contains('is-open') && event.key === 'ArrowLeft') showLightboxImage(lightboxIndex - 1);
   if (lightbox?.classList.contains('is-open') && event.key === 'ArrowRight') showLightboxImage(lightboxIndex + 1);
 });
+
+const siteHeader = document.querySelector('.site-header');
+
+function updateHeaderScrollState() {
+  siteHeader?.classList.toggle('is-scrolled', window.scrollY > 18);
+}
+
+updateHeaderScrollState();
+window.addEventListener('scroll', updateHeaderScrollState, { passive: true });
