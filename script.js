@@ -326,6 +326,10 @@ const countryCodeInput = countryCombobox?.querySelector('[data-country-code]');
 const phoneFlag = countryCombobox?.querySelector('.phone-flag');
 const countryCodeLabel = countryCombobox?.querySelector('.country-code-label');
 
+if (countryMenu && countryMenu.parentElement !== document.body) {
+  document.body.appendChild(countryMenu);
+}
+
 const americasCountries = [
   { name: 'Anguila', code: '+1-264', flag: '🇦🇮' },
   { name: 'Antigua y Barbuda', code: '+1-268', flag: '🇦🇬' },
@@ -402,19 +406,26 @@ function renderCountryOptions(filter = '') {
     option.className = 'country-option';
     option.setAttribute('role', 'option');
     option.innerHTML = `<span>${country.flag}</span><strong>${country.name}</strong><em>${country.code}</em>`;
-    option.addEventListener('pointerdown', (event) => {
-      event.preventDefault();
-      selectCountry(country);
-    });
+    option.addEventListener('click', () => selectCountry(country));
     countryOptions.appendChild(option);
   });
 }
 
 function openCountryMenu() {
   if (!countryMenu || !countryTrigger) return;
+  if (countryCodeLabel && !countryCodeInput?.value) countryCodeLabel.textContent = 'Código';
   countryMenu.hidden = false;
   countryTrigger.setAttribute('aria-expanded', 'true');
   renderCountryOptions(countrySearch?.value || '');
+
+  const rect = countryTrigger.getBoundingClientRect();
+  const panelWidth = Math.min(320, window.innerWidth - 32);
+  const left = Math.max(16, Math.min(rect.left, window.innerWidth - panelWidth - 16));
+  const top = Math.min(rect.bottom + 10, window.innerHeight - 330);
+  countryMenu.style.setProperty('--country-menu-left', `${left}px`);
+  countryMenu.style.setProperty('--country-menu-top', `${Math.max(16, top)}px`);
+  countryMenu.style.setProperty('--country-menu-width', `${panelWidth}px`);
+
   setTimeout(() => countrySearch?.focus(), 0);
 }
 
@@ -441,7 +452,7 @@ countryTrigger?.addEventListener('click', () => {
 countrySearch?.addEventListener('input', () => renderCountryOptions(countrySearch.value));
 
 document.addEventListener('click', (event) => {
-  if (!countryCombobox?.contains(event.target)) closeCountryMenu();
+  if (!countryCombobox?.contains(event.target) && !countryMenu?.contains(event.target)) closeCountryMenu();
 });
 
 document.addEventListener('keydown', (event) => {

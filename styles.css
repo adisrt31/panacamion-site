@@ -3540,3 +3540,235 @@ label.has-error .country-trigger {
 .text-red {
   color: var(--red);
 }
+
+/* Give inventory heading copy a little more breathing room */
+.inventory .section-support {
+  margin-top: 12px;
+}
+
+/* Final country-code dropdown cleanup: compact fixed scroll panel */
+.country-code-label:empty::before {
+  content: "Código";
+}
+
+.country-trigger .country-code-label {
+  white-space: nowrap;
+}
+
+.country-menu:not([hidden]) {
+  position: fixed !important;
+  top: var(--country-menu-top, 120px) !important;
+  left: var(--country-menu-left, 16px) !important;
+  z-index: 12000 !important;
+  display: block !important;
+  width: var(--country-menu-width, min(360px, calc(100vw - 32px))) !important;
+  min-width: 0 !important;
+  max-width: calc(100vw - 32px) !important;
+  max-height: min(390px, calc(100vh - 32px)) !important;
+  padding: 10px !important;
+  border: 1px solid rgba(23, 35, 50, 0.14) !important;
+  border-radius: 18px !important;
+  background: #ffffff !important;
+  box-shadow: 0 24px 58px rgba(14, 23, 34, 0.22) !important;
+  overflow: hidden !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.country-menu:not([hidden]) .country-search {
+  min-height: 44px !important;
+  margin: 0 0 8px !important;
+  background: #ffffff !important;
+}
+
+.country-menu:not([hidden]) .country-options {
+  display: block !important;
+  max-height: min(300px, calc(100vh - 132px)) !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  overscroll-behavior: contain !important;
+  -webkit-overflow-scrolling: touch !important;
+  background: #ffffff !important;
+  scrollbar-width: thin;
+}
+
+.country-menu:not([hidden]) .country-option {
+  display: grid !important;
+  grid-template-columns: 28px minmax(0, 1fr) auto !important;
+  width: 100% !important;
+  min-height: 46px !important;
+  align-items: center !important;
+  gap: 10px !important;
+  padding: 9px 10px !important;
+  border-radius: 12px !important;
+  background: #ffffff !important;
+  text-align: left !important;
+  cursor: pointer !important;
+}
+
+.country-menu:not([hidden]) .country-option strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.country-menu:not([hidden]) .country-option:hover,
+.country-menu:not([hidden]) .country-option:focus-visible {
+  background: rgba(255, 0, 60, 0.08) !important;
+}
+
+.country-combobox:has(.country-menu:not([hidden])),
+.phone-input-group:has(.country-menu:not([hidden])) .country-combobox {
+  display: block !important;
+  grid-column: auto !important;
+}
+
+.phone-input-group:has(.country-menu:not([hidden])) {
+  grid-template-columns: minmax(160px, 0.42fr) minmax(0, 0.58fr) !important;
+}
+
+.phone-input-group:has(.country-menu:not([hidden])) .country-trigger,
+.phone-input-group:has(.country-menu:not([hidden])) > input[type="tel"] {
+  grid-row: auto !important;
+  grid-column: auto !important;
+}
+
+@media (max-width: 720px) {
+  .phone-input-group:has(.country-menu:not([hidden])) {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Stable phone country-code dropdown: compact, readable, and scrollable */
+.country-trigger {
+  min-width: 0 !important;
+  overflow: hidden !important;
+}
+
+.country-trigger .phone-flag {
+  flex: 0 0 auto !important;
+  width: 26px !important;
+}
+
+.country-trigger .country-code-label {
+  display: block !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+  text-overflow: clip !important;
+  white-space: nowrap !important;
+}
+
+.country-code-label:empty::before {
+  content: "Código" !important;
+}
+
+.country-menu:not([hidden]) {
+  position: fixed !important;
+  top: var(--country-menu-top, 120px) !important;
+  left: var(--country-menu-left, 16px) !important;
+  z-index: 20000 !important;
+  display: grid !important;
+  grid-template-rows: auto minmax(0, 1fr) !important;
+  width: var(--country-menu-width, min(320px, calc(100vw - 32px))) !important;
+  min-width: 0 !important;
+  max-width: calc(100vw - 32px) !important;
+  max-height: min(330px, calc(100vh - 32px)) !important;
+  padding: 10px !important;
+  border: 1px solid rgba(23, 35, 50, 0.14) !important;
+  border-radius: 18px !important;
+  background: #ffffff !important;
+  box-shadow: 0 24px 58px rgba(14, 23, 34, 0.22) !important;
+  overflow: hidden !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  pointer-events: auto !important;
+}
+
+.country-menu:not([hidden]) .country-search {
+  width: 100% !important;
+  min-height: 44px !important;
+  margin: 0 0 8px !important;
+  padding: 8px 12px !important;
+  border-radius: 12px !important;
+  background: #ffffff !important;
+}
+
+.country-menu:not([hidden]) .country-options {
+  display: block !important;
+  max-height: none !important;
+  min-height: 0 !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  overscroll-behavior: contain !important;
+  -webkit-overflow-scrolling: touch !important;
+  touch-action: pan-y !important;
+  background: #ffffff !important;
+  scrollbar-width: thin;
+}
+
+.country-menu:not([hidden]) .country-option {
+  display: grid !important;
+  grid-template-columns: 28px minmax(0, 1fr) auto !important;
+  width: 100% !important;
+  min-height: 44px !important;
+  align-items: center !important;
+  gap: 10px !important;
+  padding: 8px 10px !important;
+  border: 0 !important;
+  border-radius: 12px !important;
+  background: #ffffff !important;
+  color: var(--navy) !important;
+  text-align: left !important;
+  cursor: pointer !important;
+}
+
+.country-menu:not([hidden]) .country-option strong {
+  overflow: hidden !important;
+  color: var(--ink) !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+.country-menu:not([hidden]) .country-option em {
+  color: var(--muted) !important;
+  font-style: normal !important;
+}
+
+.country-menu:not([hidden]) .country-option:hover,
+.country-menu:not([hidden]) .country-option:focus-visible {
+  background: rgba(255, 0, 60, 0.08) !important;
+  outline: none !important;
+}
+
+.country-menu:not([hidden]) .country-option:hover strong,
+.country-menu:not([hidden]) .country-option:focus-visible strong,
+.country-menu:not([hidden]) .country-option:hover em,
+.country-menu:not([hidden]) .country-option:focus-visible em {
+  color: var(--red) !important;
+}
+
+/* Country dropdown portal layer: keep it above the form, fully opaque, and scrollable */
+body > .country-menu:not([hidden]) {
+  isolation: isolate !important;
+  opacity: 1 !important;
+  background: #ffffff !important;
+  z-index: 2147483000 !important;
+  max-height: min(310px, calc(100vh - 32px)) !important;
+}
+
+body > .country-menu:not([hidden])::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: #ffffff;
+}
+
+body > .country-menu:not([hidden]) .country-options {
+  max-height: 220px !important;
+  overflow-y: auto !important;
+  overscroll-behavior: contain !important;
+  -webkit-overflow-scrolling: touch !important;
+}
