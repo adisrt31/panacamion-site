@@ -127,28 +127,56 @@
                 </div>
               </div>
               <div class="truck-body">
-                <div class="truck-title"><h3>Freightliner Cascadia 125</h3><small>Disponible</small><p>Sleeper para transporte regional y logística comercial</p></div>
+                <div class="truck-title"><h3>Freightliner Cascadia 125</h3><small>Disponible</small><p>Camarote para transporte regional y logística comercial</p></div>
                 <dl class="spec-list">
                   <div><dt>Año</dt><dd>2017</dd></div>
                   <div><dt>Marca</dt><dd>Freightliner</dd></div>
                   <div><dt>Modelo</dt><dd>Cascadia 125</dd></div>
                   <div><dt>Motor</dt><dd>Detroit DD15</dd></div>
                   <div><dt>Transmisión</dt><dd>Automática de 12 velocidades</dd></div>
-                  <div><dt>Tipo</dt><dd>Tractocamión con sleeper</dd></div>
+                  <div><dt>Tipo</dt><dd>Tractocamión con camarote</dd></div>
                 </dl>
                 <a class="btn btn-small" href="https://wa.me/51987827036?text=Hola%2C%20quiero%20informacion%20del%20Freightliner%20Cascadia%20125" target="_blank" rel="noreferrer">Solicitar información</a>
               </div>
             </article>
-            <article class="truck-card coming-soon featured">
-              <div class="truck-photo international"><span>Próximamente</span><strong>Más unidades en camino</strong></div>
+            <article class="truck-card premium-listing">
+              <div class="truck-photo truck-gallery" data-gallery>
+                <button type="button" class="gallery-track" aria-label="Ver foto completa">
+                  <img class="gallery-slide is-active" src="./international-lt-a26-2018-front.JPG" alt="International LT con camarote vista lateral frontal" />
+                </button>
+                <span>Camarote</span>
+              </div>
               <div class="truck-body">
-                <div class="truck-title"><h3>Próximas unidades disponibles</h3><small>Inventario en preparación</small><p>Próximamente publicaremos fotos, condición mecánica y especificaciones completas.</p></div>
+                <div class="truck-title"><h3>International LT</h3><small>Disponible</small><p>Camarote para transporte regional y operación comercial.</p></div>
+                <dl class="spec-list">
+                  <div><dt>Año</dt><dd>2018</dd></div>
+                  <div><dt>Marca</dt><dd>International</dd></div>
+                  <div><dt>Modelo</dt><dd>LT</dd></div>
+                  <div><dt>Motor</dt><dd>International A26 430 hp</dd></div>
+                  <div><dt>Transmisión</dt><dd>Eaton Fuller FAO-15810C manual de 10 velocidades</dd></div>
+                  <div><dt>Tipo</dt><dd>Tractocamión con camarote mid roof de 72 in</dd></div>
+                </dl>
+                <a class="btn btn-small" href="https://wa.me/50764410030?text=Hola%20Panacamión,%20quiero%20información%20del%20International%20LT%202018" target="_blank" rel="noreferrer">Solicitar información</a>
               </div>
             </article>
-            <article class="truck-card coming-soon">
-              <div class="truck-photo kenworth"><span>Próximamente</span><strong>Inventario por pedido</strong></div>
+            <article class="truck-card premium-listing">
+              <div class="truck-photo truck-gallery" data-gallery>
+                <button type="button" class="gallery-track" aria-label="Ver foto completa">
+                  <img class="gallery-slide is-active" src="./international-box-truck-2017.JPG" alt="International camión tipo caja vista lateral frontal" />
+                </button>
+                <span>Caja</span>
+              </div>
               <div class="truck-body">
-                <div class="truck-title"><h3>Opciones comerciales por pedido</h3><small>Selección bajo solicitud</small><p>Estamos ubicando opciones para transporte regional y operación comercial.</p></div>
+                <div class="truck-title"><h3>International Camión Tipo Caja</h3><small>Disponible</small><p>Unidad tipo caja para distribución, carga regional y operación comercial.</p></div>
+                <dl class="spec-list">
+                  <div><dt>Año</dt><dd>2017</dd></div>
+                  <div><dt>Marca</dt><dd>International</dd></div>
+                  <div><dt>Motor</dt><dd>Cummins diésel de 6 cilindros</dd></div>
+                  <div><dt>Transmisión</dt><dd>Automática</dd></div>
+                  <div><dt>Carrocería</dt><dd>26 ft x 102 in x 102 in</dd></div>
+                  <div><dt>Tipo</dt><dd>Camión tipo caja con liftgate</dd></div>
+                </dl>
+                <a class="btn btn-small" href="https://wa.me/50764410030?text=Hola%20Panacamión,%20quiero%20información%20del%20International%20camión%20tipo%20caja%202017" target="_blank" rel="noreferrer">Solicitar información</a>
               </div>
             </article>
           </div>
@@ -165,15 +193,20 @@
           </div>
           <form class="request-form premium-request-form" action="#" method="post" enctype="multipart/form-data" novalidate>
             <fieldset class="form-section request-path-section">
-              <legend>Tipo de solicitud</legend>
+              <legend>
+                <span class="request-step-label">PASO 1</span>
+                <span class="request-step-title">Seleccione el tipo de solicitud <span aria-hidden="true">*</span></span>
+                <small>El formulario cambiará según la opción seleccionada.</small>
+              </legend>
               <div class="request-tabs" role="tablist" aria-label="Tipo de solicitud">
-                <button class="request-tab is-active" type="button" role="tab" aria-selected="true" data-request-tab="unidades">Solicitud de unidades</button>
+                <button class="request-tab" type="button" role="tab" aria-selected="false" data-request-tab="unidades">Solicitud de unidades</button>
                 <button class="request-tab" type="button" role="tab" aria-selected="false" data-request-tab="repuestos">Solicitud de repuestos</button>
               </div>
-              <input type="hidden" name="tipo_solicitud" value="Solicitud de unidades" data-request-path-value />
+              <input type="hidden" name="tipo_solicitud" value="" data-request-path-value />
+              <p class="request-choice-error" aria-live="polite"></p>
             </fieldset>
 
-            <fieldset class="form-section form-card-block">
+            <fieldset class="form-section form-card-block request-content" data-request-content hidden>
               <legend>Datos del cliente</legend>
               <div class="form-grid">
                 <label class="required-field">Nombre <span aria-hidden="true">*</span><input type="text" name="nombre" autocomplete="name" data-required /></label>
@@ -199,7 +232,7 @@
               </div>
             </fieldset>
 
-            <fieldset class="form-section form-card-block request-panel is-active" data-request-panel="unidades">
+            <fieldset class="form-section form-card-block request-panel request-content" data-request-panel="unidades" data-request-content hidden>
               <legend>Detalles de solicitud</legend>
               <div class="form-grid">
                 <label class="required-field">Unidad <span aria-hidden="true">*</span>
@@ -236,7 +269,7 @@
               </div>
             </fieldset>
 
-            <fieldset class="form-section form-card-block request-panel" data-request-panel="repuestos" hidden>
+            <fieldset class="form-section form-card-block request-panel request-content" data-request-panel="repuestos" data-request-content hidden>
               <legend>Detalles de solicitud</legend>
               <div class="form-grid">
                 <label class="required-field">Nombre de repuesto <span aria-hidden="true">*</span><input type="text" name="nombre_repuesto" data-required /></label>
@@ -257,7 +290,7 @@
               </div>
             </fieldset>
 
-            <div class="form-actions">
+            <div class="form-actions request-content" data-request-content hidden>
               <button class="btn btn-primary" type="submit">Solicitar pedido</button>
               <p class="form-status" aria-live="polite"></p>
             </div>

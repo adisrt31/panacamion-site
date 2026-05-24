@@ -163,8 +163,17 @@ const requestForm = document.querySelector('.premium-request-form');
 const requestTabs = document.querySelectorAll('[data-request-tab]');
 const requestPanels = document.querySelectorAll('[data-request-panel]');
 const requestPathValue = document.querySelector('[data-request-path-value]');
+const requestContentBlocks = document.querySelectorAll('[data-request-content]');
+const requestChoiceError = document.querySelector('.request-choice-error');
 
 function syncRequestPanels(activePath) {
+  requestForm?.classList.add('has-request-path');
+  requestChoiceError.textContent = '';
+
+  requestContentBlocks.forEach((block) => {
+    block.hidden = false;
+  });
+
   requestTabs.forEach((tab) => {
     const isActive = tab.dataset.requestTab === activePath;
     tab.classList.toggle('is-active', isActive);
@@ -184,6 +193,27 @@ function syncRequestPanels(activePath) {
   if (requestPathValue) {
     requestPathValue.value = activePath === 'repuestos' ? 'Solicitud de repuestos' : 'Solicitud de unidades';
   }
+}
+
+function initializeRequestChoice() {
+  requestTabs.forEach((tab) => {
+    tab.classList.remove('is-active');
+    tab.setAttribute('aria-selected', 'false');
+  });
+
+  requestContentBlocks.forEach((block) => {
+    block.hidden = true;
+  });
+
+  requestPanels.forEach((panel) => {
+    panel.classList.remove('is-active');
+    panel.hidden = true;
+    panel.querySelectorAll('input, select, textarea').forEach((field) => {
+      field.disabled = true;
+    });
+  });
+
+  if (requestPathValue) requestPathValue.value = '';
 }
 
 function getFieldLabel(field) {
@@ -219,7 +249,7 @@ requestTabs.forEach((tab) => {
   tab.addEventListener('click', () => syncRequestPanels(tab.dataset.requestTab));
 });
 
-syncRequestPanels('unidades');
+initializeRequestChoice();
 
 requestForm?.querySelectorAll('[data-required]').forEach((field) => {
   field.addEventListener('input', () => clearFieldError(field));
@@ -228,6 +258,21 @@ requestForm?.querySelectorAll('[data-required]').forEach((field) => {
 
 requestForm?.addEventListener('submit', (event) => {
   const status = requestForm.querySelector('.form-status');
+
+  if (!requestPathValue?.value) {
+    event.preventDefault();
+    requestChoiceError.textContent = 'Seleccione el tipo de solicitud para continuar.';
+    status.textContent = 'Seleccione el tipo de solicitud para mostrar y completar el formulario.';
+    const header = document.querySelector('.site-header');
+    const offset = header ? header.offsetHeight + 24 : 80;
+    window.scrollTo({
+      top: requestForm.getBoundingClientRect().top + window.pageYOffset - offset,
+      behavior: 'smooth'
+    });
+    requestTabs[0]?.focus({ preventScroll: true });
+    return;
+  }
+
   const requiredFields = Array.from(requestForm.querySelectorAll('[data-required]'))
     .filter((field) => !field.disabled && !field.closest('[hidden]'));
   let firstInvalid = null;
