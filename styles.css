@@ -1962,29 +1962,6 @@ main {
   }
 }
 
-/* Mobile-only product graphic zoom button */
-.product-graphic-zoom {
-  display: none;
-}
-
-@media (max-width: 640px) {
-  .product-graphic-zoom {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    min-height: 48px;
-    margin-top: 14px;
-    border: 2px solid var(--red);
-    border-radius: var(--radius);
-    background: var(--red);
-    color: var(--white);
-    font: inherit;
-    font-weight: 860;
-    box-shadow: 0 16px 34px rgba(255, 0, 60, 0.24);
-  }
-}
-
 /* Mobile zoomable lightbox canvas */
 .lightbox-scroll {
   display: grid;
@@ -2273,6 +2250,12 @@ main {
 .process-graphic-wrap {
   display: flex;
   justify-content: center;
+}
+
+.process-graphic-wrap picture {
+  display: block;
+  width: 100%;
+  max-width: 1280px;
 }
 
 .process-graphic-wrap img {
@@ -2737,6 +2720,12 @@ main {
   justify-content: center;
   max-width: 1280px;
   margin: 0 auto;
+}
+
+.process-graphic-wrap picture {
+  display: block;
+  width: 100%;
+  max-width: 1280px;
 }
 
 .process-graphic-wrap img {
