@@ -3772,3 +3772,24 @@ body > .country-menu:not([hidden]) .country-options {
   overscroll-behavior: contain !important;
   -webkit-overflow-scrolling: touch !important;
 }
+
+/* Mobile inventory lightbox: fit truck photos to the screen, without changing product graphic zoom */
+@media (max-width: 640px) {
+  .image-lightbox:not(.is-product-zoom) {
+    padding: 74px 14px 24px !important;
+    place-items: center !important;
+  }
+
+  .image-lightbox:not(.is-product-zoom) .lightbox-scroll {
+    place-items: center !important;
+    overflow: hidden !important;
+  }
+
+  .image-lightbox:not(.is-product-zoom) img {
+    width: auto !important;
+    height: auto !important;
+    max-width: calc(100vw - 28px) !important;
+    max-height: calc(100dvh - 130px) !important;
+    object-fit: contain !important;
+  }
+}
