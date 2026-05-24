@@ -3313,3 +3313,230 @@ label.has-error .country-trigger {
 .premium-request-form.has-request-path .request-step-label {
   display: none;
 }
+
+/* Cleaner country-code selector: selected state shows flag + area code only */
+.phone-input-group {
+  align-items: start;
+}
+
+.country-combobox {
+  z-index: 30;
+}
+
+.country-combobox:has(.country-menu:not([hidden])) {
+  z-index: 9990;
+}
+
+.country-trigger {
+  grid-template-columns: auto 1fr auto;
+  min-width: 0;
+  padding: 0 12px;
+}
+
+.country-trigger .phone-flag {
+  width: 24px;
+  text-align: center;
+}
+
+.country-code-label {
+  min-width: 0;
+  color: var(--ink);
+  font-size: 0.94rem;
+  font-weight: 950;
+  text-overflow: clip;
+}
+
+.country-menu {
+  z-index: 9999;
+  width: min(100%, 300px);
+  min-width: min(300px, calc(100vw - 48px));
+  max-width: calc(100vw - 48px);
+  background: #fff;
+  box-shadow: 0 22px 54px rgba(14,23,34,0.22);
+  pointer-events: auto;
+}
+
+.country-search {
+  margin-top: 0 !important;
+}
+
+.country-options {
+  max-height: 190px;
+  background: #fff;
+}
+
+.country-option {
+  position: relative;
+  z-index: 1;
+  min-height: 42px;
+  background: #fff;
+}
+
+.country-option strong {
+  color: var(--ink);
+}
+
+.country-option em {
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.country-option:hover strong,
+.country-option:focus-visible strong,
+.country-option:hover em,
+.country-option:focus-visible em {
+  color: var(--red);
+}
+
+@media (max-width: 720px) {
+  .country-menu {
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+  }
+}
+
+/* Keep country dropdown inside form flow so it never covers fields below */
+.phone-field {
+  position: relative;
+}
+
+.phone-field .phone-input-group {
+  align-items: start;
+}
+
+.country-combobox:has(.country-menu:not([hidden])) {
+  grid-column: 1 / -1;
+}
+
+.country-combobox:has(.country-menu:not([hidden])) .country-trigger {
+  max-width: min(280px, 100%);
+}
+
+.country-combobox .country-menu {
+  position: static;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  margin-top: 10px;
+}
+
+.phone-input-group:has(.country-menu:not([hidden])) {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+
+/* Refined country dropdown panel below the full phone row */
+.phone-input-group:has(.country-menu:not([hidden])) {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.9fr) minmax(0, 1.1fr);
+  gap: 12px 14px;
+}
+
+.phone-input-group:has(.country-menu:not([hidden])) .country-combobox {
+  display: contents;
+}
+
+.phone-input-group:has(.country-menu:not([hidden])) .country-trigger {
+  grid-column: 1;
+  max-width: none;
+}
+
+.phone-input-group:has(.country-menu:not([hidden])) > input[type="tel"] {
+  grid-column: 2;
+  grid-row: 1;
+  margin-top: 0;
+}
+
+.phone-input-group:has(.country-menu:not([hidden])) .country-menu {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  margin-top: 0;
+  padding: 12px;
+  border: 1px solid rgba(23,35,50,0.12);
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 20px 50px rgba(14,23,34,0.14);
+}
+
+.phone-input-group:has(.country-menu:not([hidden])) .country-options {
+  max-height: 220px;
+}
+
+@media (max-width: 720px) {
+  .phone-input-group:has(.country-menu:not([hidden])) {
+    grid-template-columns: 1fr;
+  }
+
+  .phone-input-group:has(.country-menu:not([hidden])) .country-trigger,
+  .phone-input-group:has(.country-menu:not([hidden])) > input[type="tel"],
+  .phone-input-group:has(.country-menu:not([hidden])) .country-menu {
+    grid-column: 1;
+    grid-row: auto;
+  }
+}
+
+/* Refined phone country selector: opens as a clean in-form panel */
+.phone-input-group:has(.country-menu:not([hidden])) {
+  grid-template-columns: minmax(180px, 0.42fr) minmax(220px, 0.58fr);
+  align-items: start;
+  gap: 12px;
+}
+
+.country-combobox:has(.country-menu:not([hidden])) {
+  display: contents;
+}
+
+.country-combobox:has(.country-menu:not([hidden])) .country-trigger {
+  grid-column: 1;
+  grid-row: 1;
+  max-width: none;
+}
+
+.phone-input-group:has(.country-menu:not([hidden])) > input[type="tel"] {
+  grid-column: 2;
+  grid-row: 1;
+  margin-top: 0;
+}
+
+.country-combobox:has(.country-menu:not([hidden])) .country-menu {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  position: static;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  margin-top: 2px;
+  border-radius: 18px;
+  border: 1px solid rgba(23, 35, 50, 0.12);
+  background: #ffffff;
+  box-shadow: 0 20px 48px rgba(14, 23, 34, 0.16);
+  overflow: hidden;
+}
+
+.country-combobox:has(.country-menu:not([hidden])) .country-options {
+  max-height: 220px;
+  background: #ffffff;
+}
+
+.country-combobox:has(.country-menu:not([hidden])) .country-option {
+  background: #ffffff;
+  opacity: 1;
+}
+
+@media (max-width: 720px) {
+  .phone-input-group:has(.country-menu:not([hidden])) {
+    grid-template-columns: 1fr;
+  }
+
+  .country-combobox:has(.country-menu:not([hidden])) .country-trigger,
+  .phone-input-group:has(.country-menu:not([hidden])) > input[type="tel"],
+  .country-combobox:has(.country-menu:not([hidden])) .country-menu {
+    grid-column: 1;
+    grid-row: auto;
+  }
+}
+
+.text-red {
+  color: var(--red);
+}

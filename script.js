@@ -402,7 +402,10 @@ function renderCountryOptions(filter = '') {
     option.className = 'country-option';
     option.setAttribute('role', 'option');
     option.innerHTML = `<span>${country.flag}</span><strong>${country.name}</strong><em>${country.code}</em>`;
-    option.addEventListener('click', () => selectCountry(country));
+    option.addEventListener('pointerdown', (event) => {
+      event.preventDefault();
+      selectCountry(country);
+    });
     countryOptions.appendChild(option);
   });
 }
@@ -424,7 +427,8 @@ function closeCountryMenu() {
 function selectCountry(country) {
   if (countryCodeInput) countryCodeInput.value = country.code;
   if (phoneFlag) phoneFlag.textContent = country.flag;
-  if (countryCodeLabel) countryCodeLabel.textContent = `${country.name} ${country.code}`;
+  if (countryCodeLabel) countryCodeLabel.textContent = country.code;
+  if (countryTrigger) countryTrigger.setAttribute('aria-label', `${country.name} ${country.code}`);
   clearFieldError(countryCodeInput);
   closeCountryMenu();
 }
