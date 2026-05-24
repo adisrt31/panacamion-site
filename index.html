@@ -79,9 +79,12 @@
       <h2>Todos nuestros Day Cabs incluyen sistema de descanso y privacidad por tiempo limitado.</h2>
     </div>
 <div class="product-graphic-wrap">
-  <img src="./daycab-rest-system.png" alt="Sistema de descanso integrado para camiones Day Cab" />
+  <picture>
+    <source media="(max-width: 700px)" srcset="./daycab-rest-system-mobile.png" />
+    <img src="./daycab-rest-system.png" alt="Sistema de descanso integrado para camiones Day Cab" />
+  </picture>
 </div>
-<button class="product-graphic-zoom" type="button" data-open-image="./daycab-rest-system.png" data-image-alt="Sistema de descanso integrado para camiones Day Cab">Ver imagen completa</button>
+<button class="product-graphic-zoom" type="button" data-open-image="./daycab-rest-system.png" data-mobile-image="./daycab-rest-system-mobile.png" data-image-alt="Sistema de descanso integrado para camiones Day Cab">Ver imagen completa</button>
   </div>
 </section>
 
@@ -156,64 +159,105 @@
           <div class="order-mini-heading">
             <p class="section-kicker">Pedidos</p>
             <h2>Solicitud de unidades, piezas y configuraciones.</h2>
-            <p class="order-copy">Indíquenos la unidad, pieza o configuración que necesita. Panacamión evalúa opciones disponibles y coordina propuestas según aplicación, presupuesto y disponibilidad.</p>
+            <p class="order-copy">Complete la información correspondiente según el tipo de solicitud. Panacamión evaluará su pedido y coordinará opciones según aplicación, presupuesto y disponibilidad.</p>
           </div>
-          <form class="request-form" action="#" method="post" enctype="multipart/form-data" novalidate>
-            <fieldset class="form-section request-type-section">
-              <legend>Tipo de pedido</legend>
-              <div class="request-type-grid">
-                <label class="request-option"><input type="radio" name="tipo_pedido" value="Camión comercial" /><span>Camión comercial</span></label>
-                <label class="request-option"><input type="radio" name="tipo_pedido" value="Mula / Semi" /><span>Mula / Semi</span></label>
-                <label class="request-option"><input type="radio" name="tipo_pedido" value="Camión tipo caja" /><span>Camión tipo caja</span></label>
-                <label class="request-option"><input type="radio" name="tipo_pedido" value="Piezas" /><span>Piezas</span></label>
-                <label class="request-option"><input type="radio" name="tipo_pedido" value="Configuración especial" /><span>Configuración especial</span></label>
-                <label class="request-option"><input type="radio" name="tipo_pedido" value="Otro" /><span>Otro</span></label>
+          <form class="request-form premium-request-form" action="#" method="post" enctype="multipart/form-data" novalidate>
+            <fieldset class="form-section request-path-section">
+              <legend>Tipo de solicitud</legend>
+              <div class="request-tabs" role="tablist" aria-label="Tipo de solicitud">
+                <button class="request-tab is-active" type="button" role="tab" aria-selected="true" data-request-tab="unidades">Solicitud de unidades</button>
+                <button class="request-tab" type="button" role="tab" aria-selected="false" data-request-tab="repuestos">Solicitud de repuestos</button>
               </div>
+              <input type="hidden" name="tipo_solicitud" value="Solicitud de unidades" data-request-path-value />
             </fieldset>
 
-            <fieldset class="form-section">
+            <fieldset class="form-section form-card-block">
               <legend>Datos del cliente</legend>
               <div class="form-grid">
-                <label>Nombre<input type="text" name="nombre" autocomplete="name" /></label>
-                <label>Empresa<input type="text" name="empresa" autocomplete="organization" /></label>
-                <label>País<input type="text" name="pais" autocomplete="country-name" /></label>
-                <label>WhatsApp<input type="tel" name="whatsapp" autocomplete="tel" /></label>
-                <label class="wide-field">Correo electrónico<input type="email" name="correo" autocomplete="email" /></label>
+                <label class="required-field">Nombre <span aria-hidden="true">*</span><input type="text" name="nombre" autocomplete="name" data-required /></label>
+                <label>Empresa <small>Opcional</small><input type="text" name="empresa" autocomplete="organization" /></label>
+                <label class="required-field">País <span aria-hidden="true">*</span><input type="text" name="pais" autocomplete="country-name" data-required /></label>
+                <label class="required-field phone-field">Teléfono <span aria-hidden="true">*</span>
+                  <div class="phone-input-group">
+                    <div class="country-code-field country-combobox" data-country-combobox>
+                      <button class="country-trigger" type="button" aria-haspopup="listbox" aria-expanded="false">
+                        <span class="phone-flag" aria-hidden="true">🌐</span>
+                        <span class="country-code-label">Seleccione un país</span>
+                      </button>
+                      <input type="hidden" name="codigo_pais" data-country-code data-required />
+                      <div class="country-menu" role="listbox" hidden>
+                        <input class="country-search" type="search" placeholder="Buscar país" aria-label="Buscar país" />
+                        <div class="country-options"></div>
+                      </div>
+                    </div>
+                    <input type="tel" name="telefono" autocomplete="tel" data-required />
+                  </div>
+                </label>
+                <label class="required-field wide-field">Correo electrónico <span aria-hidden="true">*</span><input type="email" name="correo" autocomplete="email" data-required /></label>
               </div>
             </fieldset>
 
-            <fieldset class="form-section">
-              <legend>Detalles del pedido</legend>
+            <fieldset class="form-section form-card-block request-panel is-active" data-request-panel="unidades">
+              <legend>Detalles de solicitud</legend>
               <div class="form-grid">
-                <label>Unidad o pieza requerida<input type="text" name="unidad_o_pieza_requerida" /></label>
-                <label>Marca deseada<input type="text" name="marca" /></label>
-                <label>Modelo<input type="text" name="modelo" /></label>
-                <label>Año aproximado<input type="text" name="anio" /></label>
-                <label>Motor / transmisión<input type="text" name="motor_transmision" /></label>
-                <label>Serie<input type="text" name="serie" /></label>
-                <label>VIN #<input type="text" name="vin" /></label>
-                <label>Número de motor<input type="text" name="numero_motor" /></label>
-                <label>Presupuesto aproximado<input type="text" name="presupuesto" /></label>
-                <label>País destino<input type="text" name="pais_destino" /></label>
-                <label class="wide-field">Comentarios adicionales<textarea name="comentarios" rows="4"></textarea></label>
+                <label class="required-field">Unidad <span aria-hidden="true">*</span>
+                  <select name="unidad" data-required>
+                    <option value="">Seleccione una opción</option>
+                    <option>Camión de Cabina Corta</option>
+                    <option>Camión con Dormitorio</option>
+                    <option>Camión tipo caja</option>
+                    <option>Configuración especial</option>
+                    <option>Otro</option>
+                  </select>
+                </label>
+                <label class="required-field">Marcas sugeridas <span aria-hidden="true">*</span><input type="text" name="marcas_sugeridas" data-required /></label>
+                <label class="required-field">Año sugerido <span aria-hidden="true">*</span><input type="text" name="anio_sugerido" data-required /></label>
+                <label class="required-field">Tipo de motor <span aria-hidden="true">*</span><input type="text" name="tipo_motor" data-required /></label>
+                <label class="required-field">Tipo de transmisión <span aria-hidden="true">*</span>
+                  <select name="tipo_transmision" data-required>
+                    <option value="">Seleccione una opción</option>
+                    <option>Automática</option>
+                    <option>Manual</option>
+                  </select>
+                </label>
+                <label class="required-field">País de destino <span aria-hidden="true">*</span><input type="text" name="pais_destino" data-required /></label>
+                <label class="wide-field">Comentarios <small>Opcional</small><textarea name="comentarios_unidades" rows="4"></textarea></label>
+                <label class="wide-field required-field">Subir fotos o referencias <span aria-hidden="true">*</span>
+                  <span class="upload-zone compact-upload" role="button" tabindex="0">
+                    <input id="attachments-unidades" type="file" name="attachments" accept="image/*,.pdf" multiple data-required />
+                    <span class="upload-icon" aria-hidden="true">↑</span>
+                    <span>Suba fotos, referencias o documentos de la unidad solicitada.</span>
+                    <strong>Seleccionar archivos</strong>
+                  </span>
+                </label>
+                <ul class="file-list wide-field" aria-live="polite"></ul>
               </div>
             </fieldset>
 
-            <fieldset class="form-section">
-              <legend>Referencias y documentos</legend>
-              <label class="upload-zone" for="attachments">
-                <input id="attachments" type="file" name="attachments" accept="image/*,.pdf" multiple />
-                <span class="upload-icon" aria-hidden="true">↑</span>
-                <span>Suba fotos, referencias o documentos relacionados con su pedido.</span>
-                <small>Fotos de referencia, capturas, PDFs, VIN o piezas.</small>
-                <strong>Seleccionar archivos</strong>
-              </label>
-              <ul class="file-list" aria-live="polite"></ul>
+            <fieldset class="form-section form-card-block request-panel" data-request-panel="repuestos" hidden>
+              <legend>Detalles de solicitud</legend>
+              <div class="form-grid">
+                <label class="required-field">Nombre de repuesto <span aria-hidden="true">*</span><input type="text" name="nombre_repuesto" data-required /></label>
+                <label class="required-field">Número de repuesto <span aria-hidden="true">*</span><input type="text" name="numero_repuesto" data-required /></label>
+                <label class="required-field">VIN del vehículo <span aria-hidden="true">*</span><input type="text" name="vin_vehiculo" data-required /></label>
+                <label class="required-field">Año del vehículo <span aria-hidden="true">*</span><input type="text" name="anio_vehiculo" data-required /></label>
+                <label class="required-field">Número de motor <span aria-hidden="true">*</span><input type="text" name="numero_motor" data-required /></label>
+                <label class="wide-field">Comentarios <small>Opcional</small><textarea name="comentarios_repuestos" rows="4"></textarea></label>
+                <label class="wide-field required-field">Subir fotos del repuesto <span aria-hidden="true">*</span>
+                  <span class="upload-zone compact-upload" role="button" tabindex="0">
+                    <input id="attachments-repuestos" type="file" name="attachments" accept="image/*" multiple data-required />
+                    <span class="upload-icon" aria-hidden="true">↑</span>
+                    <span>Suba fotos del repuesto o referencias visuales.</span>
+                    <strong>Seleccionar archivos</strong>
+                  </span>
+                </label>
+                <ul class="file-list wide-field" aria-live="polite"></ul>
+              </div>
             </fieldset>
 
             <div class="form-actions">
               <button class="btn btn-primary" type="submit">Solicitar pedido</button>
-              <p>Formulario visual listo para futura integración con email, archivos y validación.</p>
+              <p class="form-status" aria-live="polite"></p>
             </div>
           </form>
         </div>

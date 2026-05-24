@@ -1909,6 +1909,12 @@ main {
   justify-content: center;
 }
 
+.product-graphic-wrap picture {
+  display: block;
+  width: 100%;
+  max-width: 1200px;
+}
+
 .product-graphic-wrap img {
   display: block;
   width: 100%;
@@ -2768,4 +2774,420 @@ main {
 
 .inventory {
   background: var(--soft);
+}
+
+/* Premium Pedidos form redesign */
+.premium-request-form {
+  gap: 20px;
+  max-width: 1080px;
+  padding: clamp(18px, 2.8vw, 30px);
+  border-radius: 22px;
+  background: linear-gradient(145deg, rgba(255,255,255,0.9), rgba(248,250,252,0.82));
+}
+
+.request-path-section {
+  display: grid;
+  gap: 12px;
+}
+
+.request-tabs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  padding: 6px;
+  border: 1px solid rgba(23,35,50,0.1);
+  border-radius: 16px;
+  background: rgba(23,35,50,0.045);
+}
+
+.request-tab {
+  min-height: 46px;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--navy);
+  font: inherit;
+  font-size: 0.92rem;
+  font-weight: 900;
+  cursor: pointer;
+  transition: background 180ms ease, color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+}
+
+.request-tab:hover,
+.request-tab:focus-visible {
+  color: var(--red);
+  outline: none;
+}
+
+.request-tab.is-active {
+  background: var(--white);
+  color: var(--red);
+  box-shadow: 0 12px 28px rgba(14,23,34,0.09);
+}
+
+.form-card-block {
+  padding: clamp(18px, 2.4vw, 26px);
+  border: 1px solid rgba(23,35,50,0.09);
+  border-radius: 18px;
+  background: rgba(255,255,255,0.74);
+  box-shadow: 0 18px 48px rgba(14,23,34,0.07);
+}
+
+.request-panel[hidden] {
+  display: none !important;
+}
+
+.premium-request-form .form-grid {
+  gap: 14px 16px;
+}
+
+.premium-request-form .form-grid label {
+  position: relative;
+  gap: 7px;
+  color: #172332;
+  font-size: 0.82rem;
+  letter-spacing: 0;
+}
+
+.required-field > span {
+  color: var(--red);
+  font-weight: 950;
+}
+
+.premium-request-form label small {
+  margin-left: 6px;
+  color: #98a2b3;
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.premium-request-form input[type="text"],
+.premium-request-form input[type="tel"],
+.premium-request-form input[type="email"],
+.premium-request-form select,
+.premium-request-form textarea {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid rgba(23,35,50,0.13);
+  border-radius: 12px;
+  background: rgba(255,255,255,0.9);
+  color: var(--ink);
+  font: inherit;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 180ms ease, box-shadow 180ms ease, background 180ms ease;
+}
+
+.premium-request-form select {
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, #697586 50%), linear-gradient(135deg, #697586 50%, transparent 50%);
+  background-position: calc(100% - 18px) 50%, calc(100% - 13px) 50%;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+  padding-right: 34px;
+}
+
+.premium-request-form input:focus,
+.premium-request-form select:focus,
+.premium-request-form textarea:focus {
+  border-color: rgba(255,0,60,0.55);
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(255,0,60,0.08);
+}
+
+.phone-input-group {
+  display: grid;
+  grid-template-columns: 132px minmax(0, 1fr);
+  gap: 8px;
+}
+
+.phone-input-group select,
+.phone-input-group input {
+  min-width: 0;
+}
+
+.field-error {
+  display: none;
+  margin-top: 2px;
+  color: var(--red);
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+label.has-error input,
+label.has-error select,
+label.has-error textarea {
+  border-color: var(--red) !important;
+  box-shadow: 0 0 0 4px rgba(255,0,60,0.09) !important;
+}
+
+label.has-error .field-error {
+  display: block;
+}
+
+.premium-request-form .compact-upload {
+  min-height: 104px;
+  padding: 18px;
+  border-radius: 14px;
+}
+
+.premium-request-form .compact-upload .upload-icon {
+  width: 34px;
+  height: 34px;
+  margin-bottom: 7px;
+  font-size: 1rem;
+}
+
+.premium-request-form .compact-upload span:not(.upload-icon) {
+  font-size: 0.9rem;
+}
+
+.premium-request-form .compact-upload strong {
+  min-height: 32px;
+  margin-top: 9px;
+}
+
+.premium-request-form .form-actions {
+  align-items: center;
+}
+
+.form-status {
+  min-height: 18px;
+  margin: 0;
+  color: var(--red);
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+
+@media (max-width: 720px) {
+  .request-tabs,
+  .premium-request-form .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .phone-input-group {
+    grid-template-columns: 118px minmax(0, 1fr);
+  }
+
+  .form-card-block {
+    padding: 16px;
+  }
+}
+
+@media (max-width: 420px) {
+  .phone-input-group {
+    grid-template-columns: 1fr;
+  }
+
+  .request-tab {
+    min-height: 42px;
+    font-size: 0.86rem;
+  }
+}
+
+/* Pedidos phone code and required marker polish */
+.premium-request-form .form-grid label {
+  display: block;
+}
+
+.premium-request-form .form-grid label > input,
+.premium-request-form .form-grid label > select,
+.premium-request-form .form-grid label > textarea,
+.premium-request-form .form-grid label > .phone-input-group,
+.premium-request-form .form-grid label > .upload-zone {
+  margin-top: 7px;
+}
+
+.required-field > span[aria-hidden="true"] {
+  display: inline;
+  margin-left: 4px;
+  color: var(--red);
+  font-size: 0.86em;
+  line-height: 1;
+  vertical-align: 0.12em;
+}
+
+.country-code-field {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 10px;
+  border: 1px solid rgba(23,35,50,0.13);
+  border-radius: 12px;
+  background: rgba(255,255,255,0.9);
+  transition: border-color 180ms ease, box-shadow 180ms ease, background 180ms ease;
+}
+
+.country-code-field:focus-within {
+  border-color: rgba(255,0,60,0.55);
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(255,0,60,0.08);
+}
+
+.country-code-field .phone-flag {
+  font-size: 1.05rem;
+  line-height: 1;
+}
+
+.country-code-field input[type="tel"] {
+  min-height: 42px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  font-weight: 900;
+}
+
+.country-code-field input[type="tel"]:focus {
+  border: 0;
+  box-shadow: none;
+  background: transparent;
+}
+
+.phone-input-group select {
+  display: none;
+}
+
+/* Searchable country dropdown for Pedidos phone field */
+.country-combobox {
+  position: relative;
+  display: block;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+}
+
+.country-trigger {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  width: 100%;
+  min-height: 44px;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px;
+  border: 1px solid rgba(23,35,50,0.13);
+  border-radius: 12px;
+  background: rgba(255,255,255,0.9);
+  color: var(--navy);
+  font: inherit;
+  font-size: 0.84rem;
+  font-weight: 900;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 180ms ease, box-shadow 180ms ease, background 180ms ease;
+}
+
+.country-trigger::after {
+  width: 8px;
+  height: 8px;
+  content: "";
+  border-right: 2px solid #697586;
+  border-bottom: 2px solid #697586;
+  transform: rotate(45deg) translateY(-2px);
+}
+
+.country-trigger:hover,
+.country-trigger:focus-visible,
+.country-combobox:focus-within .country-trigger {
+  border-color: rgba(255,0,60,0.55);
+  background: #fff;
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(255,0,60,0.08);
+}
+
+.country-code-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.country-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 80;
+  width: min(360px, calc(100vw - 48px));
+  padding: 8px;
+  border: 1px solid rgba(23,35,50,0.12);
+  border-radius: 16px;
+  background: rgba(255,255,255,0.96);
+  box-shadow: 0 20px 48px rgba(14,23,34,0.18);
+  backdrop-filter: blur(18px) saturate(150%);
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
+}
+
+.country-search {
+  width: 100%;
+  min-height: 38px !important;
+  margin-bottom: 8px;
+  padding: 8px 10px !important;
+  border-radius: 11px !important;
+  font-size: 0.82rem !important;
+}
+
+.country-options {
+  display: grid;
+  max-height: 230px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-right: 2px;
+}
+
+.country-option {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  min-height: 38px;
+  padding: 8px 9px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--navy);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.country-option:hover,
+.country-option:focus-visible {
+  background: rgba(255,0,60,0.08);
+  color: var(--red);
+  outline: none;
+}
+
+.country-option strong {
+  overflow: hidden;
+  font-size: 0.82rem;
+  font-weight: 850;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.country-option em {
+  color: #697586;
+  font-size: 0.75rem;
+  font-style: normal;
+  font-weight: 850;
+}
+
+.country-combobox input[type="hidden"] {
+  display: none;
+}
+
+label.has-error .country-trigger {
+  border-color: var(--red) !important;
+  box-shadow: 0 0 0 4px rgba(255,0,60,0.09) !important;
+}
+
+@media (max-width: 720px) {
+  .country-menu {
+    width: min(320px, calc(100vw - 54px));
+  }
 }
