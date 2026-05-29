@@ -188,7 +188,7 @@ function buildCustomerEmail() {
       <div style="max-width:680px;margin:0 auto;padding:28px 16px;">
         <div style="background:#FFFFFF;border:1px solid #E4E8EE;border-radius:8px;overflow:hidden;box-shadow:0 18px 46px rgba(14,23,34,0.08);">
           <div style="padding:24px 26px;background:#1B2A3A;text-align:left;">
-            <img src="https://panacamion-site.vercel.app/panacamion-logo-no-bg.png" width="210" alt="Panacamión" style="display:block;width:210px;max-width:78%;height:auto;border:0;outline:none;text-decoration:none;" />
+            <img src="https://panacamion-site.vercel.app/assets/panacamion-horizontal-darkhero.svg" width="240" alt="Panacamión" style="display:block;width:240px;max-width:82%;height:auto;border:0;outline:none;text-decoration:none;" />
           </div>
           <div style="height:4px;background:#FF003C;"></div>
           <div style="padding:30px 26px;font-size:16px;line-height:1.6;">
