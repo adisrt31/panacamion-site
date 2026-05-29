@@ -187,8 +187,8 @@ function buildCustomerEmail() {
       <div style="display:none;max-height:0;overflow:hidden;">Hemos recibido su solicitud en Panacamión.</div>
       <div style="max-width:680px;margin:0 auto;padding:28px 16px;">
         <div style="background:#FFFFFF;border:1px solid #E4E8EE;border-radius:8px;overflow:hidden;box-shadow:0 18px 46px rgba(14,23,34,0.08);">
-          <div style="padding:24px 26px;background:#1B2A3A;">
-            <div style="color:#FFFFFF;font-size:24px;font-weight:800;letter-spacing:.01em;">Panacamión</div>
+          <div style="padding:24px 26px;background:#1B2A3A;text-align:left;">
+            <img src="https://panacamion-site.vercel.app/panacamion-logo-no-bg.png" width="210" alt="Panacamión" style="display:block;width:210px;max-width:78%;height:auto;border:0;outline:none;text-decoration:none;" />
           </div>
           <div style="height:4px;background:#FF003C;"></div>
           <div style="padding:30px 26px;font-size:16px;line-height:1.6;">
@@ -199,9 +199,23 @@ function buildCustomerEmail() {
             <p>Gracias por confiar en Panacamión International S.A.</p>
             <p style="margin-bottom:0;">Saludos,<br><strong>Panacamión International S.A.</strong><br>Soluciones comerciales para trabajo pesado.</p>
           </div>
-          <div style="padding:20px 26px;background:#F8FAFC;border-top:1px solid #E4E8EE;color:#697586;font-size:14px;line-height:1.5;">
-            <div style="color:#1B2A3A;font-weight:700;">Instagram: <a href="https://www.instagram.com/panacamion/" style="color:#FF003C;text-decoration:none;">@panacamion</a></div>
-            <div><a href="https://www.panacamion.com" style="color:#1B2A3A;text-decoration:none;">www.panacamion.com</a></div>
+          <div style="padding:22px 26px;background:#F8FAFC;border-top:1px solid #E4E8EE;color:#697586;font-size:14px;line-height:1.5;">
+            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border-collapse:collapse;">
+              <tr>
+                <td style="padding:0 0 10px;color:#1B2A3A;font-size:15px;font-weight:700;">Panacamión International S.A.</td>
+              </tr>
+              <tr>
+                <td style="padding:0;color:#697586;">
+                  <a href="https://www.instagram.com/panacamion/" style="display:inline-block;color:#FF003C;text-decoration:none;font-weight:700;">
+                    <span style="display:inline-block;width:18px;height:18px;margin-right:6px;border:2px solid #FF003C;border-radius:5px;vertical-align:-5px;box-sizing:border-box;">
+                      <span style="display:block;width:6px;height:6px;margin:4px auto 0;border:2px solid #FF003C;border-radius:50%;box-sizing:border-box;"></span>
+                    </span>@panacamion
+                  </a>
+                  <span style="display:inline-block;margin:0 10px;color:#C5CBD3;">|</span>
+                  <a href="https://www.panacamion.com" style="color:#1B2A3A;text-decoration:none;font-weight:700;">www.panacamion.com</a>
+                </td>
+              </tr>
+            </table>
           </div>
         </div>
       </div>
