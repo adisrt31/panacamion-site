@@ -256,11 +256,12 @@ requestForm?.querySelectorAll('[data-required]').forEach((field) => {
   field.addEventListener('change', () => clearFieldError(field));
 });
 
-requestForm?.addEventListener('submit', (event) => {
+requestForm?.addEventListener('submit', async (event) => {
+  event.preventDefault();
   const status = requestForm.querySelector('.form-status');
+  const submitButton = requestForm.querySelector('button[type="submit"]');
 
   if (!requestPathValue?.value) {
-    event.preventDefault();
     requestChoiceError.textContent = 'Seleccione el tipo de solicitud para continuar.';
     status.textContent = 'Seleccione el tipo de solicitud para mostrar y completar el formulario.';
     const header = document.querySelector('.site-header');
@@ -293,7 +294,6 @@ requestForm?.addEventListener('submit', (event) => {
   });
 
   if (firstInvalid) {
-    event.preventDefault();
     status.textContent = 'Complete los campos marcados en rojo para enviar la solicitud.';
     const header = document.querySelector('.site-header');
     const offset = header ? header.offsetHeight + 24 : 80;
@@ -310,10 +310,25 @@ requestForm?.addEventListener('submit', (event) => {
     return;
   }
 
-  status.textContent = '';
-  if (requestForm.getAttribute('action') === '#') {
-    event.preventDefault();
-    status.textContent = 'Solicitud lista para enviar cuando se conecte el servicio de formulario.';
+  status.textContent = 'Enviando solicitud...';
+  if (submitButton) submitButton.disabled = true;
+
+  try {
+    const response = await fetch('/api/submit-request', {
+      method: requestForm.method || 'POST',
+      body: new FormData(requestForm)
+    });
+    const result = await response.json().catch(() => ({}));
+
+    if (!response.ok || !result.ok) {
+      throw new Error(result.message || 'No pudimos enviar la solicitud en este momento.');
+    }
+
+    status.textContent = 'Solicitud enviada correctamente. Hemos enviado una confirmación a su correo electrónico. Nuestro equipo se pondrá en contacto con usted dentro de 24 a 48 horas hábiles.';
+  } catch (error) {
+    status.textContent = error.message || 'No pudimos enviar la solicitud en este momento. Por favor intente nuevamente o contáctenos por WhatsApp.';
+  } finally {
+    if (submitButton) submitButton.disabled = false;
   }
 });
 
