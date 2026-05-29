@@ -199,7 +199,7 @@ function buildCustomerEmail() {
             <p>Hemos recibido su solicitud y nuestro equipo comenzará a revisar las opciones disponibles según el tipo de unidad, repuesto o configuración solicitada.</p>
             <p>Nos comunicaremos con usted dentro de las próximas 24 a 48 horas hábiles para brindarle seguimiento.</p>
             <p>Gracias por confiar en Panacamión International S.A.</p>
-            <p style="margin-bottom:0;">Saludos,<br><strong>Panacamión International S.A.</strong><br>Soluciones comerciales para trabajo pesado.</p>
+            <p style="margin-bottom:0;">Saludos,<br><strong>Panacamión International S.A.</strong><br>Importación comercial con enfoque operativo.</p>
           </div>
           <div style="padding:22px 26px;background:#F8FAFC;border-top:1px solid #E4E8EE;color:#697586;font-size:14px;line-height:1.5;">
             <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border-collapse:collapse;">
