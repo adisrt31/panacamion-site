@@ -107,7 +107,7 @@ img { display: block; max-width: 100%; }
   position: relative;
   z-index: 1;
   display: grid;
-  grid-template-columns: minmax(0, 0.98fr) minmax(280px, 0.42fr);
+  grid-template-columns: minmax(0, 0.98fr) minmax(340px, 0.52fr);
   gap: 56px;
   align-items: end;
   padding-top: 56px;
@@ -169,7 +169,7 @@ h3 { margin-bottom: 0; color: var(--ink); font-size: 1.05rem; line-height: 1.25;
 .hero-panel {
   position: relative;
   transform: translateY(24px);
-  padding: 20px 22px 22px;
+  padding: 20px 26px 22px;
   border: 1px solid rgba(255,255,255,0.16);
   border-radius: var(--radius);
   background: linear-gradient(180deg, rgba(255,255,255,0.13), rgba(255,255,255,0.06));
@@ -191,10 +191,18 @@ h3 { margin-bottom: 0; color: var(--ink); font-size: 1.05rem; line-height: 1.25;
 .lead { margin: 0; color: var(--navy); font-size: clamp(1.04rem, 1.8vw, 1.26rem); }
 .services { background: var(--soft); }
 .section-heading { max-width: 780px; margin-bottom: 38px; }
+.section-supporting-copy {
+  max-width: 700px;
+  margin: 16px 0 0;
+  color: var(--muted);
+  font-size: clamp(1rem, 1.6vw, 1.18rem);
+  font-weight: 650;
+  line-height: 1.5;
+}
 .row-heading { display: flex; max-width: none; align-items: end; justify-content: space-between; gap: 24px; }
 .text-link { color: var(--red); font-weight: 850; }
 .service-grid,
-.inventory-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.inventory-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
 .service-card,
 .truck-card,
 .contact-card {
@@ -292,6 +300,31 @@ h3 { margin-bottom: 0; color: var(--ink); font-size: 1.05rem; line-height: 1.25;
 .gallery-dot.is-active {
   background: var(--red);
   transform: scale(1.18);
+}
+.inventory-photo-placeholder {
+  display: flex;
+  min-height: 220px;
+  align-items: flex-end;
+  padding: 22px;
+  background:
+    radial-gradient(circle at 82% 18%, rgba(255,0,60,0.18), transparent 30%),
+    linear-gradient(135deg, #111c28, #243246 58%, #121b27);
+}
+.inventory-photo-placeholder::before {
+  background:
+    linear-gradient(180deg, rgba(14,23,34,0.02), rgba(14,23,34,0.48)),
+    repeating-linear-gradient(135deg, rgba(255,255,255,0.06) 0 1px, transparent 1px 24px);
+}
+.inventory-photo-placeholder::after {
+  display: none;
+}
+.inventory-photo-placeholder strong {
+  position: relative;
+  z-index: 1;
+  max-width: 250px;
+  color: var(--white);
+  font-size: 1.18rem;
+  line-height: 1.12;
 }
 .premium-listing .truck-body {
   display: flex;
@@ -1931,10 +1964,62 @@ main {
   box-shadow: 0 24px 70px rgba(23, 35, 50, 0.14);
 }
 
+.program-graphic-section {
+  background: var(--white);
+}
+
+.program-graphic-heading {
+  max-width: 1080px;
+  margin-bottom: 44px;
+}
+
+.program-graphic-heading h2 {
+  max-width: 1080px;
+  font-size: clamp(2rem, 3.35vw, 3.15rem);
+  line-height: 1.08;
+}
+
+.program-graphic-heading p:last-child {
+  margin: 14px 0 0;
+  color: var(--red);
+  font-size: clamp(1.08rem, 1.8vw, 1.3rem);
+  font-weight: 850;
+  line-height: 1.25;
+}
+
+.program-graphic-wrap {
+  display: flex;
+  justify-content: center;
+}
+
+.program-graphic-wrap picture {
+  display: block;
+  width: 100%;
+  max-width: 1200px;
+}
+
+.program-graphic-wrap img {
+  display: block;
+  width: 100%;
+  max-width: 1200px;
+  height: auto;
+  border-radius: 18px;
+  box-shadow: 0 24px 70px rgba(23, 35, 50, 0.14);
+}
+
 @media (max-width: 640px) {
-  .product-graphic-wrap img {
+  .product-graphic-wrap img,
+  .program-graphic-wrap img {
     max-width: 100%;
     border-radius: 12px;
+  }
+
+  .program-graphic-heading {
+    margin-bottom: 28px;
+  }
+
+  .program-graphic-heading h2 {
+    font-size: clamp(1.75rem, 8vw, 2.35rem);
   }
 }
 
@@ -3312,6 +3397,60 @@ label.has-error .country-trigger {
 
 .premium-request-form.has-request-path .request-step-label {
   display: none;
+}
+
+/* Static units banner: the form now has one request path. */
+.request-unit-banner {
+  display: flex;
+  min-height: 76px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 10px;
+  border: 2px solid rgba(23,35,50,0.14);
+  border-radius: 20px;
+  background:
+    radial-gradient(circle at 88% 16%, rgba(255,0,60,0.08), transparent 34%),
+    rgba(23,35,50,0.045);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.82);
+}
+
+.request-unit-banner strong {
+  display: inline-flex;
+  min-height: 54px;
+  align-items: center;
+  padding: 0 24px;
+  border-radius: 15px;
+  color: var(--white);
+  background: var(--red);
+  box-shadow: 0 16px 34px rgba(255,0,60,0.26);
+  font-size: 0.94rem;
+  font-weight: 950;
+}
+
+.request-unit-banner span {
+  padding-right: 16px;
+  color: var(--muted);
+  font-size: 0.88rem;
+  font-weight: 780;
+  text-align: right;
+}
+
+@media (max-width: 640px) {
+  .request-unit-banner {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .request-unit-banner strong {
+    justify-content: center;
+  }
+
+  .request-unit-banner span {
+    padding: 0 8px 4px;
+    text-align: center;
+  }
 }
 
 /* Cleaner country-code selector: selected state shows flag + area code only */

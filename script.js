@@ -168,7 +168,7 @@ const requestChoiceError = document.querySelector('.request-choice-error');
 
 function syncRequestPanels(activePath) {
   requestForm?.classList.add('has-request-path');
-  requestChoiceError.textContent = '';
+  if (requestChoiceError) requestChoiceError.textContent = '';
 
   requestContentBlocks.forEach((block) => {
     block.hidden = false;
@@ -191,7 +191,7 @@ function syncRequestPanels(activePath) {
   });
 
   if (requestPathValue) {
-    requestPathValue.value = activePath === 'repuestos' ? 'Solicitud de repuestos' : 'Solicitud de unidades';
+    requestPathValue.value = 'Solicitud de unidades';
   }
 }
 
@@ -250,6 +250,7 @@ requestTabs.forEach((tab) => {
 });
 
 initializeRequestChoice();
+syncRequestPanels('unidades');
 
 requestForm?.querySelectorAll('[data-required]').forEach((field) => {
   field.addEventListener('input', () => clearFieldError(field));
@@ -262,7 +263,7 @@ requestForm?.addEventListener('submit', async (event) => {
   const submitButton = requestForm.querySelector('button[type="submit"]');
 
   if (!requestPathValue?.value) {
-    requestChoiceError.textContent = 'Seleccione el tipo de solicitud para continuar.';
+    if (requestChoiceError) requestChoiceError.textContent = 'Seleccione el tipo de solicitud para continuar.';
     status.textContent = 'Seleccione el tipo de solicitud para mostrar y completar el formulario.';
     const header = document.querySelector('.site-header');
     const offset = header ? header.offsetHeight + 24 : 80;
