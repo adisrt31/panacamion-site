@@ -3939,3 +3939,109 @@ body > .country-menu:not([hidden]) .country-options {
     font-size: 0.78rem !important;
   }
 }
+
+/* Unified site grid and surface rhythm */
+:root {
+  --content-width: 1160px;
+  --section-space: 88px;
+  --section-content-gap: 38px;
+  --surface-radius: 18px;
+  --surface-shadow: 0 20px 56px rgba(14, 23, 34, 0.11);
+  --nested-surface-shadow: 0 12px 32px rgba(14, 23, 34, 0.07);
+}
+
+.container {
+  width: min(var(--content-width), calc(100% - 40px));
+  max-width: none;
+  margin-right: auto;
+  margin-left: auto;
+  padding-right: 0;
+  padding-left: 0;
+}
+
+.about.section-pad,
+.product-graphic-section.section-pad,
+.program-graphic-section.section-pad,
+.services.section-pad,
+.inventory.section-pad,
+.order.section-pad,
+.contact.section-pad {
+  padding-top: var(--section-space);
+  padding-bottom: var(--section-space);
+}
+
+.section-heading,
+.product-graphic-heading,
+.program-graphic-heading,
+.order-mini-heading {
+  margin: 0 0 var(--section-content-gap);
+}
+
+.order-mini-heading,
+.premium-request-form {
+  width: 100%;
+  max-width: none;
+}
+
+.product-graphic-wrap,
+.program-graphic-wrap,
+.process-graphic-wrap,
+.product-graphic-wrap picture,
+.program-graphic-wrap picture,
+.process-graphic-wrap picture,
+.product-graphic-wrap img,
+.program-graphic-wrap img,
+.process-graphic-wrap img {
+  width: 100%;
+  max-width: none;
+}
+
+.product-graphic-wrap img,
+.program-graphic-wrap img,
+.process-graphic-wrap img,
+.truck-card,
+.contact-card,
+.premium-request-form {
+  border-radius: var(--surface-radius);
+  box-shadow: var(--surface-shadow);
+}
+
+.form-card-block {
+  border-radius: 14px;
+  box-shadow: var(--nested-surface-shadow);
+}
+
+@media (max-width: 768px) {
+  :root {
+    --section-space: 56px;
+    --section-content-gap: 28px;
+    --surface-radius: 14px;
+  }
+
+  .container {
+    width: 100%;
+    max-width: var(--content-width);
+    padding-right: 18px;
+    padding-left: 18px;
+  }
+
+  .product-graphic-wrap img,
+  .program-graphic-wrap img,
+  .process-graphic-wrap img,
+  .truck-card,
+  .contact-card,
+  .premium-request-form {
+    border-radius: var(--surface-radius);
+  }
+
+  .form-card-block {
+    border-radius: 12px;
+  }
+}
+
+@media (max-width: 390px) {
+  .container {
+    padding-right: 18px;
+    padding-left: 18px;
+  }
+}
