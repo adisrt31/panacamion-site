@@ -61,6 +61,8 @@ document.querySelectorAll('.upload-zone input[type="file"]').forEach((attachment
 
 document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
   anchor.addEventListener('click', (event) => {
+    if (anchor.matches('[data-open-trato-modal]')) return;
+
     const id = anchor.getAttribute('href');
     if (!id || id === '#') return;
 
@@ -77,6 +79,62 @@ document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
     window.scrollTo({ top, behavior: 'smooth' });
     history.pushState(null, '', id);
   });
+});
+
+const tratoModal = document.querySelector('.trato-modal');
+const tratoModalPanel = document.querySelector('.trato-modal__panel');
+const tratoModalTriggers = document.querySelectorAll('[data-open-trato-modal]');
+const tratoModalCloseButtons = document.querySelectorAll('[data-close-trato-modal]');
+const tratoApplicationForm = document.querySelector('.trato-application-form');
+let lastTratoModalTrigger = null;
+
+function openTratoModal(trigger) {
+  if (!tratoModal) return;
+
+  lastTratoModalTrigger = trigger || document.activeElement;
+  document.body.classList.add('modal-open');
+  tratoModal.classList.add('is-open');
+  tratoModal.setAttribute('aria-hidden', 'false');
+  requestAnimationFrame(() => {
+    tratoModalPanel?.querySelector('input, button, textarea')?.focus({ preventScroll: true });
+  });
+}
+
+function closeTratoModal() {
+  if (!tratoModal) return;
+
+  document.body.classList.remove('modal-open');
+  tratoModal.classList.remove('is-open');
+  tratoModal.setAttribute('aria-hidden', 'true');
+  if (lastTratoModalTrigger instanceof HTMLElement) {
+    lastTratoModalTrigger.focus({ preventScroll: true });
+  }
+}
+
+window.openTratoModal = openTratoModal;
+window.closeTratoModal = closeTratoModal;
+
+document.addEventListener('click', (event) => {
+  const trigger = event.target.closest('[data-open-trato-modal]');
+  if (!trigger) return;
+
+  event.preventDefault();
+  openTratoModal(trigger);
+});
+
+tratoModalTriggers.forEach((trigger) => {
+  trigger.onclick = (event) => {
+    event.preventDefault();
+    openTratoModal(trigger);
+  };
+});
+
+tratoModalCloseButtons.forEach((button) => {
+  button.addEventListener('click', closeTratoModal);
+});
+
+tratoApplicationForm?.addEventListener('submit', (event) => {
+  event.preventDefault();
 });
 
 const lightbox = document.querySelector('.image-lightbox');
@@ -124,6 +182,7 @@ lightbox?.addEventListener('click', (event) => {
 });
 
 document.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape' && tratoModal?.classList.contains('is-open')) closeTratoModal();
   if (event.key === 'Escape') closeLightbox();
   if (lightbox?.classList.contains('is-open') && event.key === 'ArrowLeft') showLightboxImage(lightboxIndex - 1);
   if (lightbox?.classList.contains('is-open') && event.key === 'ArrowRight') showLightboxImage(lightboxIndex + 1);

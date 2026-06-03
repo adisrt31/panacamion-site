@@ -54,7 +54,7 @@
       <section class="stats section-dark" aria-label="Diferenciales de Panacamión">
         <div class="container stats-grid">
           <div><span>01</span><strong>Selección estratégica</strong><p>Unidades rigurosamente evaluadas para garantizar el máximo rendimiento, menores costos operativos y alta rentabilidad en la región.</p></div>
-          <div><span>02</span><strong>Pedidos personalizados</strong><p>Buscamos e importamos camiones, motores y configuraciones técnicas exactas según las especificaciones y necesidades de su negocio.</p></div>
+          <div><span>02</span><strong>Pedidos personalizados</strong><p>Buscamos e importamos unidades comerciales y configuraciones técnicas exactas según las especificaciones y necesidades de su negocio.</p></div>
           <div><span>03</span><strong>Importación transparente</strong><p>Proceso logístico claro y confiable desde origen en EE. UU. hasta la entrega final, con comunicación directa y sin costos ocultos.</p></div>
           <div><span>04</span><strong>Enfoque operativo</strong><p>Soluciones diseñadas por expertos que entienden las exigencias reales del transporte, la logística y la carga pesada en Centroamérica.</p></div>
         </div>
@@ -90,9 +90,14 @@
       <section class="program-graphic-section section-pad" id="programa">
         <div class="container">
           <div class="section-heading program-graphic-heading">
-            <p class="section-kicker">APLICA AL PROGRAMA</p>
-            <h2>Obtén tu unidad hoy y comienza a trabajar mientras construyes el futuro de tu operación.</h2>
-            <p>¡Tu próxima oportunidad comienza aquí!</p>
+            <p class="section-kicker">FACILIDADES DE COMPRA</p>
+            <h2>Obtén tu unidad hoy y comienza a trabajar.</h2>
+          </div>
+          <!-- Future Phase 2:
+          Replace scroll behavior with a popup application form for the Programa Trato Hecho. -->
+          <div class="program-cta-row">
+            <p class="program-opportunity">¡Tu próxima oportunidad comienza aquí!</p>
+            <a class="program-cta-button" href="#trato-hecho-modal" data-open-trato-modal>INICIAR PROCESO</a>
           </div>
           <div class="program-graphic-wrap">
             <picture>
@@ -353,6 +358,32 @@
   <button type="button" class="lightbox-nav lightbox-next" aria-label="Siguiente foto">›</button>
 </div>
 
-    <script src="script.js"></script>
+<div class="trato-modal" id="trato-hecho-modal" aria-hidden="true">
+  <div class="trato-modal__overlay" data-close-trato-modal></div>
+  <section class="trato-modal__panel" role="dialog" aria-modal="true" aria-labelledby="trato-modal-title" aria-describedby="trato-modal-subtitle">
+    <button class="trato-modal__close" type="button" aria-label="Cerrar formulario" data-close-trato-modal>×</button>
+    <div class="trato-modal__header">
+      <p class="section-kicker">FACILIDADES DE COMPRA</p>
+      <h2 id="trato-modal-title">TRATO HECHO</h2>
+      <p id="trato-modal-subtitle">Complete el formulario y nuestro equipo se pondrá en contacto con usted.</p>
+    </div>
+    <form class="trato-application-form" novalidate>
+      <div class="trato-form-grid">
+        <label class="required-field">Nombre completo <span aria-hidden="true">*</span><input type="text" name="nombre_completo" autocomplete="name" required /></label>
+        <label>Empresa <small>Opcional</small><input type="text" name="empresa" autocomplete="organization" /></label>
+        <label class="required-field">Teléfono <span aria-hidden="true">*</span><input type="tel" name="telefono" autocomplete="tel" required /></label>
+        <label class="required-field">Correo electrónico <span aria-hidden="true">*</span><input type="email" name="correo" autocomplete="email" required /></label>
+        <label class="required-field">País <span aria-hidden="true">*</span><input type="text" name="pais" autocomplete="country-name" required /></label>
+        <label class="wide-field">Comentarios <small>Opcional</small><textarea name="comentarios" rows="4"></textarea></label>
+      </div>
+      <div class="trato-modal__actions">
+        <button class="btn btn-primary" type="submit">Enviar solicitud</button>
+        <button class="btn trato-modal__cancel" type="button" data-close-trato-modal>Cancelar</button>
+      </div>
+    </form>
+  </section>
+</div>
+
+    <script src="script.js?v=trato-modal"></script>
   </body>
 </html>
