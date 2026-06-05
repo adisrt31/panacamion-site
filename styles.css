@@ -4123,6 +4123,11 @@ body > .country-menu:not([hidden]) .country-options {
   gap: 20px;
 }
 
+.trato-application-form[hidden],
+.trato-application-form.is-hidden {
+  display: none !important;
+}
+
 .trato-form-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
