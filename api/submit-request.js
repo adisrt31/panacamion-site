@@ -63,9 +63,39 @@ const REQUEST_REQUIRED_FIELDS = {
 const SMALL_ATTACHMENT_LIMIT_BYTES = 4 * 1024 * 1024;
 const TOTAL_ATTACHMENT_LIMIT_BYTES = 10 * 1024 * 1024;
 const MAX_ATTACHMENTS = 5;
+const MAX_REQUEST_BYTES = 12 * 1024 * 1024;
+const MAX_FIELD_LENGTH = 1200;
+const MAX_TOTAL_FIELD_LENGTH = 6000;
+const HONEYPOT_FIELDS = new Set(["website", "company_website", "url"]);
+const ALLOWED_ATTACHMENT_TYPES = new Set([
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "image/gif",
+  "application/pdf"
+]);
+const ALLOWED_ATTACHMENT_EXTENSIONS = new Set([".jpg", ".jpeg", ".png", ".webp", ".gif", ".pdf"]);
+const EMAIL_PATTERN = /^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/;
+const PHONE_PATTERN = /^[0-9+()\-\s.]{7,24}$/;
+const SUSPICIOUS_INPUT_PATTERN = /<\s*script|javascript:|data:text\/html|onerror\s*=|onload\s*=|bcc:|cc:/i;
+const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
+const RATE_LIMIT_MAX_REQUESTS = 5;
+const rateLimitStore = globalThis.__panacamionPedidosRateLimit || new Map();
+globalThis.__panacamionPedidosRateLimit = rateLimitStore;
 
 function jsonResponse(body, status = 200) {
   return Response.json(body, { status });
+}
+
+function safeHeaders() {
+  return {
+    "Cache-Control": "no-store",
+    "X-Content-Type-Options": "nosniff"
+  };
+}
+
+function safeJsonResponse(body, status = 200) {
+  return Response.json(body, { status, headers: safeHeaders() });
 }
 
 function escapeHtml(value) {
@@ -83,7 +113,7 @@ function normalizeLabel(name) {
 
 function normalizeFromEmail(value) {
   const fallback = "Panacamión <pedidos@panacamion.com>";
-  const from = String(value || fallback).trim();
+  const from = String(value || fallback).replace(/[\r\n]/g, "").trim();
   if (from.includes("<") && from.includes(">")) return from;
 
   const emailMatch = from.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i);
@@ -96,8 +126,68 @@ function normalizeFromEmail(value) {
 function splitEmails(value) {
   return String(value || "")
     .split(",")
-    .map((email) => email.trim())
+    .map((email) => email.replace(/[\r\n]/g, "").trim())
+    .filter((email) => EMAIL_PATTERN.test(email))
     .filter(Boolean);
+}
+
+function sanitizeFieldValue(value) {
+  return String(value || "")
+    .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, "")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, MAX_FIELD_LENGTH);
+}
+
+function isValidEmail(value) {
+  const email = String(value || "").trim();
+  return email.length <= 254 && EMAIL_PATTERN.test(email);
+}
+
+function isValidPhone(value) {
+  return PHONE_PATTERN.test(String(value || "").trim());
+}
+
+function hasSuspiciousInput(fields) {
+  return Object.values(fields).some((value) => SUSPICIOUS_INPUT_PATTERN.test(String(value || "")));
+}
+
+function getFileExtension(name) {
+  const match = String(name || "").toLowerCase().match(/\.[a-z0-9]+$/);
+  return match ? match[0] : "";
+}
+
+function isAllowedAttachment(file) {
+  const extension = getFileExtension(file.name);
+  return ALLOWED_ATTACHMENT_TYPES.has(file.type) && ALLOWED_ATTACHMENT_EXTENSIONS.has(extension);
+}
+
+function logEmailError(context, error) {
+  console.error(context, {
+    message: error?.message || "Unknown email failure",
+    name: error?.name || "Error"
+  });
+}
+
+function getClientKey(request) {
+  const forwardedFor = request.headers.get("x-forwarded-for") || "";
+  const realIp = request.headers.get("x-real-ip") || "";
+  return (forwardedFor.split(",")[0] || realIp || "unknown").trim();
+}
+
+function isRateLimited(request) {
+  const now = Date.now();
+  const key = getClientKey(request);
+  const current = rateLimitStore.get(key) || { count: 0, resetAt: now + RATE_LIMIT_WINDOW_MS };
+
+  if (current.resetAt <= now) {
+    rateLimitStore.set(key, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
+    return false;
+  }
+
+  current.count += 1;
+  rateLimitStore.set(key, current);
+  return current.count > RATE_LIMIT_MAX_REQUESTS;
 }
 
 function buildRows(entries) {
@@ -236,8 +326,7 @@ async function sendResendEmail(payload, apiKey) {
   });
 
   if (!response.ok) {
-    const errorBody = await response.text();
-    throw new Error(`Resend rejected email request (${response.status}): ${errorBody.slice(0, 240)}`);
+    throw new Error(`Resend rejected email request (${response.status})`);
   }
 
   return response.json();
@@ -249,7 +338,12 @@ async function getAttachments(files) {
   let totalBytes = 0;
 
   for (const file of files.slice(0, MAX_ATTACHMENTS)) {
-    if (!file.size || file.size > SMALL_ATTACHMENT_LIMIT_BYTES || totalBytes + file.size > TOTAL_ATTACHMENT_LIMIT_BYTES) {
+    if (
+      !file.size ||
+      !isAllowedAttachment(file) ||
+      file.size > SMALL_ATTACHMENT_LIMIT_BYTES ||
+      totalBytes + file.size > TOTAL_ATTACHMENT_LIMIT_BYTES
+    ) {
       skippedFiles.push(file);
       continue;
     }
@@ -258,6 +352,7 @@ async function getAttachments(files) {
     totalBytes += file.size;
     attachments.push({
       filename: file.name || "archivo-adjunto",
+      content_type: file.type,
       content: buffer.toString("base64")
     });
   }
@@ -276,20 +371,37 @@ export async function POST(request) {
   const toEmail = process.env.PANACAMION_TO_EMAIL || "pedidos@panacamion.com";
   const alertEmails = splitEmails(process.env.PANACAMION_ALERT_EMAILS || "info@panacamion.com,salinas.javier@panacamion.com");
   const fromEmail = normalizeFromEmail(process.env.PANACAMION_FROM_EMAIL);
+  const contentLength = Number(request.headers.get("content-length") || 0);
 
   if (!apiKey) {
-    return jsonResponse({ ok: false, message: "El servicio de formulario no está configurado." }, 500);
+    return safeJsonResponse({ ok: false, message: "El servicio de formulario no está configurado." }, 500);
+  }
+
+  if (!isValidEmail(toEmail) || !alertEmails.length) {
+    return safeJsonResponse({ ok: false, message: "El servicio de formulario no está configurado correctamente." }, 500);
+  }
+
+  if (contentLength && contentLength > MAX_REQUEST_BYTES) {
+    return safeJsonResponse({ ok: false, message: "La solicitud excede el tamaño permitido." }, 413);
+  }
+
+  if (isRateLimited(request)) {
+    return safeJsonResponse({
+      ok: false,
+      message: "Hemos recibido varias solicitudes en poco tiempo. Por favor intente nuevamente más tarde."
+    }, 429);
   }
 
   let formData;
   try {
     formData = await request.formData();
   } catch {
-    return jsonResponse({ ok: false, message: "No pudimos leer la solicitud enviada." }, 400);
+    return safeJsonResponse({ ok: false, message: "No pudimos leer la solicitud enviada." }, 400);
   }
 
   const fields = {};
   const files = [];
+  let totalFieldLength = 0;
 
   for (const [key, value] of formData.entries()) {
     if (value instanceof File) {
@@ -297,8 +409,19 @@ export async function POST(request) {
       continue;
     }
 
-    const trimmed = String(value || "").trim();
+    const trimmed = sanitizeFieldValue(value);
     if (!trimmed) continue;
+    if (HONEYPOT_FIELDS.has(key)) {
+      return safeJsonResponse({ ok: true });
+    }
+
+    totalFieldLength += trimmed.length;
+    if (totalFieldLength > MAX_TOTAL_FIELD_LENGTH) {
+      return safeJsonResponse({
+        ok: false,
+        message: "La solicitud contiene demasiado texto. Por favor reduzca el contenido e intente nuevamente."
+      }, 400);
+    }
 
     if (fields[key]) fields[key] = `${fields[key]}, ${trimmed}`;
     else fields[key] = trimmed;
@@ -308,16 +431,31 @@ export async function POST(request) {
   const requiredFields = REQUEST_REQUIRED_FIELDS[requestType] || ["tipo_solicitud", "nombre", "pais", "codigo_pais", "telefono", "correo"];
   const missingFields = requiredFields.filter((field) => !fields[field]);
 
-  if (!fields.correo || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fields.correo)) {
+  if (!isValidEmail(fields.correo)) {
     missingFields.push("correo");
   }
 
-  if (!files.length) {
-    missingFields.push("attachments");
+  if (fields.telefono && !isValidPhone(fields.telefono)) {
+    missingFields.push("telefono");
+  }
+
+  if (hasSuspiciousInput(fields)) {
+    return safeJsonResponse({
+      ok: false,
+      message: "No pudimos procesar la solicitud. Revise la información e intente nuevamente."
+    }, 400);
+  }
+
+  const invalidFiles = files.filter((file) => !isAllowedAttachment(file));
+  if (invalidFiles.length) {
+    return safeJsonResponse({
+      ok: false,
+      message: "Uno o más archivos no tienen un formato permitido. Use imágenes JPG, PNG, WEBP, GIF o PDF."
+    }, 400);
   }
 
   if (!requestType || missingFields.length) {
-    return jsonResponse({
+    return safeJsonResponse({
       ok: false,
       message: "Complete los campos requeridos antes de enviar la solicitud."
     }, 400);
@@ -355,16 +493,16 @@ export async function POST(request) {
       html: buildCustomerEmail()
     }, apiKey);
   } catch (error) {
-    console.error("Panacamion form email failed:", error.message);
-    return jsonResponse({
+    logEmailError("Panacamion form email failed", error);
+    return safeJsonResponse({
       ok: false,
       message: "No pudimos enviar la solicitud en este momento. Por favor intente nuevamente o contáctenos por WhatsApp."
     }, 502);
   }
 
-  return jsonResponse({ ok: true });
+  return safeJsonResponse({ ok: true });
 }
 
 export function GET() {
-  return jsonResponse({ ok: true, message: "Panacamión request endpoint is available." });
+  return safeJsonResponse({ ok: true, message: "Panacamión request endpoint is available." });
 }
