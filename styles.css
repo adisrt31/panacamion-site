@@ -4383,8 +4383,8 @@ body > .country-menu:not([hidden]) .country-options {
 /* Unified site grid and surface rhythm */
 :root {
   --content-width: 1160px;
-  --section-space: 88px;
-  --section-content-gap: 38px;
+  --section-space: 76px;
+  --section-content-gap: 34px;
   --surface-radius: 18px;
   --surface-shadow: 0 20px 56px rgba(14, 23, 34, 0.11);
   --nested-surface-shadow: 0 12px 32px rgba(14, 23, 34, 0.07);
@@ -4453,8 +4453,8 @@ body > .country-menu:not([hidden]) .country-options {
 
 @media (max-width: 768px) {
   :root {
-    --section-space: 56px;
-    --section-content-gap: 28px;
+    --section-space: 50px;
+    --section-content-gap: 25px;
     --surface-radius: 14px;
   }
 
@@ -4483,5 +4483,36 @@ body > .country-menu:not([hidden]) .country-options {
   .container {
     padding-right: 18px;
     padding-left: 18px;
+  }
+}
+
+/* Launch spacing refinement: slightly tighter footer transition */
+.footer {
+  padding-top: 30px;
+  padding-bottom: 16px;
+}
+
+.footer-main {
+  gap: 30px;
+}
+
+.footer-bottom {
+  margin-top: 24px;
+  padding-top: 12px;
+}
+
+@media (max-width: 768px) {
+  .footer {
+    padding-top: 28px;
+    padding-bottom: 16px;
+  }
+
+  .footer-main {
+    gap: 22px;
+  }
+
+  .footer-bottom {
+    margin-top: 22px;
+    padding-top: 12px;
   }
 }

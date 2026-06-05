@@ -1,6 +1,19 @@
 const toggle = document.querySelector(".nav-toggle");
 const menuLinks = document.querySelectorAll(".nav-menu a");
 const backdrop = document.querySelector(".nav-backdrop");
+const ALLOWED_UPLOAD_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'application/pdf']);
+const ALLOWED_UPLOAD_EXTENSIONS = new Set(['.jpg', '.jpeg', '.png', '.webp', '.gif', '.pdf']);
+const MAX_UPLOAD_BYTES = 4 * 1024 * 1024;
+const MAX_UPLOAD_COUNT = 5;
+
+function getFileExtension(name) {
+  const match = String(name || '').toLowerCase().match(/\.[a-z0-9]+$/);
+  return match ? match[0] : '';
+}
+
+function isAllowedUpload(file) {
+  return ALLOWED_UPLOAD_TYPES.has(file.type) && ALLOWED_UPLOAD_EXTENSIONS.has(getFileExtension(file.name));
+}
 
 function setMenu(open) {
   document.body.classList.toggle("nav-open", open);
@@ -49,7 +62,15 @@ document.querySelectorAll('.upload-zone input[type="file"]').forEach((attachment
 
     fileList.innerHTML = '';
 
-    Array.from(attachmentInput.files || []).forEach((file) => {
+    const files = Array.from(attachmentInput.files || []);
+    const invalidFile = files.find((file) => !isAllowedUpload(file) || file.size > MAX_UPLOAD_BYTES);
+    if (files.length > MAX_UPLOAD_COUNT || invalidFile) {
+      attachmentInput.value = '';
+      setFieldError(attachmentInput, 'Use máximo 5 archivos JPG, PNG, WEBP, GIF o PDF de hasta 4 MB cada uno.');
+      return;
+    }
+
+    files.forEach((file) => {
       const item = document.createElement('li');
       item.textContent = file.name;
       fileList.appendChild(item);
@@ -89,6 +110,7 @@ const tratoApplicationForm = document.querySelector('.trato-application-form');
 const tratoSuccessPanel = document.querySelector('.trato-modal__success');
 const tratoSuccessClose = document.querySelector('[data-trato-success-close]');
 let lastTratoModalTrigger = null;
+let isSubmittingTrato = false;
 
 function openTratoModal(trigger) {
   if (!tratoModal) return;
@@ -186,6 +208,7 @@ function clearTratoFieldError(field) {
 
 tratoApplicationForm?.addEventListener('submit', async (event) => {
   event.preventDefault();
+  if (isSubmittingTrato) return;
   const status = tratoApplicationForm.querySelector('.trato-modal__status');
   const submitButton = tratoApplicationForm.querySelector('button[type="submit"]');
   const requiredFields = Array.from(tratoApplicationForm.querySelectorAll('[required]'));
@@ -214,6 +237,7 @@ tratoApplicationForm?.addEventListener('submit', async (event) => {
   }
 
   status.textContent = 'Enviando solicitud...';
+  isSubmittingTrato = true;
   if (submitButton) submitButton.disabled = true;
 
   try {
@@ -231,6 +255,7 @@ tratoApplicationForm?.addEventListener('submit', async (event) => {
   } catch (error) {
     status.textContent = 'No pudimos enviar su solicitud en este momento. Por favor intente nuevamente o contáctenos por WhatsApp.';
   } finally {
+    isSubmittingTrato = false;
     if (submitButton) submitButton.disabled = false;
   }
 });
@@ -325,6 +350,7 @@ const requestPanels = document.querySelectorAll('[data-request-panel]');
 const requestPathValue = document.querySelector('[data-request-path-value]');
 const requestContentBlocks = document.querySelectorAll('[data-request-content]');
 const requestChoiceError = document.querySelector('.request-choice-error');
+let isSubmittingPedidos = false;
 
 function syncRequestPanels(activePath) {
   requestForm?.classList.add('has-request-path');
@@ -447,6 +473,7 @@ requestForm?.querySelectorAll('[data-required]').forEach((field) => {
 
 requestForm?.addEventListener('submit', async (event) => {
   event.preventDefault();
+  if (isSubmittingPedidos) return;
   const status = requestForm.querySelector('.form-status');
   const submitButton = requestForm.querySelector('button[type="submit"]');
 
@@ -480,6 +507,15 @@ requestForm?.addEventListener('submit', async (event) => {
       setFieldError(field, 'Ingrese un correo válido.');
       firstInvalid ||= field;
     }
+
+    if (field.type === 'file') {
+      const files = Array.from(field.files || []);
+      const invalidFile = files.find((file) => !isAllowedUpload(file) || file.size > MAX_UPLOAD_BYTES);
+      if (files.length > MAX_UPLOAD_COUNT || invalidFile) {
+        setFieldError(field, 'Use máximo 5 archivos JPG, PNG, WEBP, GIF o PDF de hasta 4 MB cada uno.');
+        firstInvalid ||= field;
+      }
+    }
   });
 
   if (firstInvalid) {
@@ -500,6 +536,7 @@ requestForm?.addEventListener('submit', async (event) => {
   }
 
   status.textContent = 'Enviando solicitud...';
+  isSubmittingPedidos = true;
   if (submitButton) submitButton.disabled = true;
 
   try {
@@ -517,6 +554,7 @@ requestForm?.addEventListener('submit', async (event) => {
   } catch (error) {
     status.textContent = error.message || 'No pudimos enviar la solicitud en este momento. Por favor intente nuevamente o contáctenos por WhatsApp.';
   } finally {
+    isSubmittingPedidos = false;
     if (submitButton) submitButton.disabled = false;
   }
 });
