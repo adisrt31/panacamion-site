@@ -118,6 +118,7 @@ function closeTratoModal() {
 function resetTratoModal() {
   tratoApplicationForm?.reset();
   tratoApplicationForm?.removeAttribute('hidden');
+  tratoModalPanel?.classList.remove('is-success');
   if (tratoSuccessPanel) tratoSuccessPanel.hidden = true;
   tratoApplicationForm?.querySelectorAll('.has-error').forEach((label) => label.classList.remove('has-error'));
   const status = tratoApplicationForm?.querySelector('.trato-modal__status');
@@ -126,6 +127,7 @@ function resetTratoModal() {
 
 function showTratoSuccessState() {
   tratoApplicationForm?.setAttribute('hidden', '');
+  tratoModalPanel?.classList.add('is-success');
   if (tratoSuccessPanel) tratoSuccessPanel.hidden = false;
   requestAnimationFrame(() => {
     tratoSuccessClose?.focus({ preventScroll: true });

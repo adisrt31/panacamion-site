@@ -4065,6 +4065,15 @@ body > .country-menu:not([hidden]) .country-options {
   transform: translateY(0) scale(1);
 }
 
+.trato-modal__panel.is-success {
+  display: grid;
+  width: min(560px, 100%);
+  min-height: 0;
+  place-items: center;
+  overflow: visible;
+  padding: clamp(28px, 4vw, 44px);
+}
+
 .trato-modal__close {
   position: absolute;
   top: 16px;
@@ -4197,10 +4206,14 @@ body > .country-menu:not([hidden]) .country-options {
   font-weight: 850;
 }
 
+.trato-modal__panel.is-success .trato-modal__header {
+  display: none;
+}
+
 .trato-modal__success {
   display: grid;
   justify-items: center;
-  padding: clamp(18px, 3vw, 28px) 0 6px;
+  padding: 0;
   text-align: center;
 }
 
@@ -4212,7 +4225,7 @@ body > .country-menu:not([hidden]) .country-options {
   display: grid;
   width: 64px;
   height: 64px;
-  margin-bottom: 20px;
+  margin-bottom: 18px;
   place-items: center;
   border-radius: 50%;
   background: var(--red);
@@ -4231,7 +4244,7 @@ body > .country-menu:not([hidden]) .country-options {
 
 .trato-modal__success p {
   max-width: 520px;
-  margin: 16px 0 26px;
+  margin: 14px 0 24px;
   color: var(--muted);
   font-size: clamp(1rem, 1.4vw, 1.12rem);
   font-weight: 650;
@@ -4252,6 +4265,11 @@ body > .country-menu:not([hidden]) .country-options {
     width: 100%;
     max-height: calc(100dvh - 32px);
     border-radius: 14px;
+  }
+
+  .trato-modal__panel.is-success {
+    min-height: auto;
+    padding: 30px 22px;
   }
 
   .trato-form-grid {
