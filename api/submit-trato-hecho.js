@@ -8,9 +8,30 @@ const FIELD_LABELS = {
 };
 
 const REQUIRED_FIELDS = ["nombre_completo", "telefono", "correo", "pais"];
+const MAX_FIELD_LENGTH = 1200;
+const MAX_TOTAL_FIELD_LENGTH = 5000;
+const HONEYPOT_FIELDS = new Set(["website", "company_website", "url"]);
+const EMAIL_PATTERN = /^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/;
+const PHONE_PATTERN = /^[0-9+()\-\s.]{7,24}$/;
+const SUSPICIOUS_INPUT_PATTERN = /<\s*script|javascript:|data:text\/html|onerror\s*=|onload\s*=|bcc:|cc:/i;
+const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
+const RATE_LIMIT_MAX_REQUESTS = 5;
+const rateLimitStore = globalThis.__panacamionTratoRateLimit || new Map();
+globalThis.__panacamionTratoRateLimit = rateLimitStore;
 
 function jsonResponse(body, status = 200) {
   return Response.json(body, { status });
+}
+
+function safeHeaders() {
+  return {
+    "Cache-Control": "no-store",
+    "X-Content-Type-Options": "nosniff"
+  };
+}
+
+function safeJsonResponse(body, status = 200) {
+  return Response.json(body, { status, headers: safeHeaders() });
 }
 
 function escapeHtml(value) {
@@ -25,13 +46,14 @@ function escapeHtml(value) {
 function splitEmails(value) {
   return String(value || "")
     .split(",")
-    .map((email) => email.trim())
+    .map((email) => email.replace(/[\r\n]/g, "").trim())
+    .filter((email) => EMAIL_PATTERN.test(email))
     .filter(Boolean);
 }
 
 function normalizeFromEmail(value) {
   const fallback = "Panacamión <pedidos@panacamion.com>";
-  const from = String(value || fallback).trim();
+  const from = String(value || fallback).replace(/[\r\n]/g, "").trim();
   if (from.includes("<") && from.includes(">")) return from;
 
   const emailMatch = from.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i);
@@ -39,6 +61,55 @@ function normalizeFromEmail(value) {
 
   const name = from.replace(emailMatch[0], "").trim() || "Panacamión";
   return `${name} <${emailMatch[0]}>`;
+}
+
+function sanitizeFieldValue(value) {
+  return String(value || "")
+    .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, "")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, MAX_FIELD_LENGTH);
+}
+
+function isValidEmail(value) {
+  const email = String(value || "").trim();
+  return email.length <= 254 && EMAIL_PATTERN.test(email);
+}
+
+function isValidPhone(value) {
+  return PHONE_PATTERN.test(String(value || "").trim());
+}
+
+function hasSuspiciousInput(fields) {
+  return Object.values(fields).some((value) => SUSPICIOUS_INPUT_PATTERN.test(String(value || "")));
+}
+
+function logEmailError(context, error) {
+  console.error(context, {
+    message: error?.message || "Unknown email failure",
+    name: error?.name || "Error"
+  });
+}
+
+function getClientKey(request) {
+  const forwardedFor = request.headers.get("x-forwarded-for") || "";
+  const realIp = request.headers.get("x-real-ip") || "";
+  return (forwardedFor.split(",")[0] || realIp || "unknown").trim();
+}
+
+function isRateLimited(request) {
+  const now = Date.now();
+  const key = getClientKey(request);
+  const current = rateLimitStore.get(key) || { count: 0, resetAt: now + RATE_LIMIT_WINDOW_MS };
+
+  if (current.resetAt <= now) {
+    rateLimitStore.set(key, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
+    return false;
+  }
+
+  current.count += 1;
+  rateLimitStore.set(key, current);
+  return current.count > RATE_LIMIT_MAX_REQUESTS;
 }
 
 function buildRows(fields) {
@@ -128,8 +199,7 @@ async function sendResendEmail(payload, apiKey) {
   });
 
   if (!response.ok) {
-    const errorBody = await response.text();
-    throw new Error(`Resend rejected email request (${response.status}): ${errorBody.slice(0, 240)}`);
+    throw new Error(`Resend rejected email request (${response.status})`);
   }
 
   return response.json();
@@ -142,29 +212,61 @@ export async function POST(request) {
   const fromEmail = normalizeFromEmail(process.env.PANACAMION_FROM_EMAIL);
 
   if (!apiKey) {
-    return jsonResponse({ ok: false, message: "El servicio de formulario no está configurado." }, 500);
+    return safeJsonResponse({ ok: false, message: "El servicio de formulario no está configurado." }, 500);
+  }
+
+  if (!isValidEmail(toEmail) || !alertEmails.length) {
+    return safeJsonResponse({ ok: false, message: "El servicio de formulario no está configurado correctamente." }, 500);
+  }
+
+  if (isRateLimited(request)) {
+    return safeJsonResponse({
+      ok: false,
+      message: "Hemos recibido varias solicitudes en poco tiempo. Por favor intente nuevamente más tarde."
+    }, 429);
   }
 
   let formData;
   try {
     formData = await request.formData();
   } catch {
-    return jsonResponse({ ok: false, message: "No pudimos leer la solicitud enviada." }, 400);
+    return safeJsonResponse({ ok: false, message: "No pudimos leer la solicitud enviada." }, 400);
   }
 
   const fields = {};
+  let totalFieldLength = 0;
   for (const [key, value] of formData.entries()) {
-    const trimmed = String(value || "").trim();
+    const trimmed = sanitizeFieldValue(value);
     if (trimmed) fields[key] = trimmed;
+    if (trimmed && HONEYPOT_FIELDS.has(key)) {
+      return safeJsonResponse({ ok: true });
+    }
+    totalFieldLength += trimmed.length;
+    if (totalFieldLength > MAX_TOTAL_FIELD_LENGTH) {
+      return safeJsonResponse({
+        ok: false,
+        message: "La solicitud contiene demasiado texto. Por favor reduzca el contenido e intente nuevamente."
+      }, 400);
+    }
   }
 
   const missingFields = REQUIRED_FIELDS.filter((field) => !fields[field]);
-  if (!fields.correo || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fields.correo)) {
+  if (!isValidEmail(fields.correo)) {
     missingFields.push("correo");
+  }
+  if (fields.telefono && !isValidPhone(fields.telefono)) {
+    missingFields.push("telefono");
+  }
+
+  if (hasSuspiciousInput(fields)) {
+    return safeJsonResponse({
+      ok: false,
+      message: "No pudimos procesar la solicitud. Revise la información e intente nuevamente."
+    }, 400);
   }
 
   if (missingFields.length) {
-    return jsonResponse({
+    return safeJsonResponse({
       ok: false,
       message: "Complete los campos requeridos antes de enviar la solicitud."
     }, 400);
@@ -199,16 +301,16 @@ export async function POST(request) {
       html: buildCustomerEmail()
     }, apiKey);
   } catch (error) {
-    console.error("Panacamion Trato Hecho email failed:", error.message);
-    return jsonResponse({
+    logEmailError("Panacamion Trato Hecho email failed", error);
+    return safeJsonResponse({
       ok: false,
       message: "No pudimos enviar su solicitud en este momento. Por favor intente nuevamente o contáctenos por WhatsApp."
     }, 502);
   }
 
-  return jsonResponse({ ok: true });
+  return safeJsonResponse({ ok: true });
 }
 
 export function GET() {
-  return jsonResponse({ ok: true, message: "Panacamión Trato Hecho endpoint is available." });
+  return safeJsonResponse({ ok: true, message: "Panacamión Trato Hecho endpoint is available." });
 }
