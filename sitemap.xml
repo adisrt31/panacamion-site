@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset
+  xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+>
+  <url>
+    <loc>https://www.panacamion.com/</loc>
+    <lastmod>2026-06-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://www.panacamion.com/inventory-freightliner-cascadia-transit-banner.png</image:loc>
+      <image:title>Freightliner Cascadia 125 con camarote importado desde Estados Unidos para Panamá</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.panacamion.com/inventory-international-lt-transit-banner.png</image:loc>
+      <image:title>International LT sleeper disponible para reserva e importación comercial</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.panacamion.com/inventory-international-box-truck-transit-banner.png</image:loc>
+      <image:title>Camión tipo caja International 26 pies para distribución y logística comercial</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.panacamion.com/inventory-cisterna-heil-transit-banner.png</image:loc>
+      <image:title>Cisterna Heil elíptica para transporte de combustible importada desde Estados Unidos</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.panacamion.com/daycab-rest-system.png</image:loc>
+      <image:title>Sistema de descanso y privacidad para camiones Day Cab</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.panacamion.com/trato-hecho-programa-branded.png</image:loc>
+      <image:title>Programa Trato Hecho de Panacamión</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.panacamion.com/process-commercial-graphic.png</image:loc>
+      <image:title>Proceso comercial de Panacamión de inicio a entrega</image:title>
+    </image:image>
+  </url>
+</urlset>
