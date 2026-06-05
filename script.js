@@ -86,12 +86,15 @@ const tratoModalPanel = document.querySelector('.trato-modal__panel');
 const tratoModalTriggers = document.querySelectorAll('[data-open-trato-modal]');
 const tratoModalCloseButtons = document.querySelectorAll('[data-close-trato-modal]');
 const tratoApplicationForm = document.querySelector('.trato-application-form');
+const tratoSuccessPanel = document.querySelector('.trato-modal__success');
+const tratoSuccessClose = document.querySelector('[data-trato-success-close]');
 let lastTratoModalTrigger = null;
 
 function openTratoModal(trigger) {
   if (!tratoModal) return;
 
   lastTratoModalTrigger = trigger || document.activeElement;
+  resetTratoModal();
   document.body.classList.add('modal-open');
   tratoModal.classList.add('is-open');
   tratoModal.setAttribute('aria-hidden', 'false');
@@ -106,9 +109,27 @@ function closeTratoModal() {
   document.body.classList.remove('modal-open');
   tratoModal.classList.remove('is-open');
   tratoModal.setAttribute('aria-hidden', 'true');
+  resetTratoModal();
   if (lastTratoModalTrigger instanceof HTMLElement) {
     lastTratoModalTrigger.focus({ preventScroll: true });
   }
+}
+
+function resetTratoModal() {
+  tratoApplicationForm?.reset();
+  tratoApplicationForm?.removeAttribute('hidden');
+  if (tratoSuccessPanel) tratoSuccessPanel.hidden = true;
+  tratoApplicationForm?.querySelectorAll('.has-error').forEach((label) => label.classList.remove('has-error'));
+  const status = tratoApplicationForm?.querySelector('.trato-modal__status');
+  if (status) status.textContent = '';
+}
+
+function showTratoSuccessState() {
+  tratoApplicationForm?.setAttribute('hidden', '');
+  if (tratoSuccessPanel) tratoSuccessPanel.hidden = false;
+  requestAnimationFrame(() => {
+    tratoSuccessClose?.focus({ preventScroll: true });
+  });
 }
 
 window.openTratoModal = openTratoModal;
@@ -132,6 +153,8 @@ tratoModalTriggers.forEach((trigger) => {
 tratoModalCloseButtons.forEach((button) => {
   button.addEventListener('click', closeTratoModal);
 });
+
+tratoSuccessClose?.addEventListener('click', closeTratoModal);
 
 tratoApplicationForm?.querySelectorAll('[required]').forEach((field) => {
   field.addEventListener('input', () => clearTratoFieldError(field));
@@ -200,8 +223,7 @@ tratoApplicationForm?.addEventListener('submit', async (event) => {
       throw new Error(result.message || 'No pudimos enviar su solicitud en este momento.');
     }
 
-    tratoApplicationForm.reset();
-    status.textContent = 'Solicitud enviada correctamente. Nuestro equipo se pondrá en contacto con usted pronto.';
+    showTratoSuccessState();
   } catch (error) {
     status.textContent = 'No pudimos enviar su solicitud en este momento. Por favor intente nuevamente o contáctenos por WhatsApp.';
   } finally {
