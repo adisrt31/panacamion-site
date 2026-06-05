@@ -367,7 +367,7 @@
       <h2 id="trato-modal-title">TRATO HECHO</h2>
       <p id="trato-modal-subtitle">Complete el formulario y nuestro equipo se pondrá en contacto con usted.</p>
     </div>
-    <form class="trato-application-form" novalidate>
+    <form class="trato-application-form" action="/api/submit-trato-hecho" method="post" novalidate>
       <div class="trato-form-grid">
         <label class="required-field">Nombre completo <span aria-hidden="true">*</span><input type="text" name="nombre_completo" autocomplete="name" required /></label>
         <label>Empresa <small>Opcional</small><input type="text" name="empresa" autocomplete="organization" /></label>
@@ -380,6 +380,7 @@
         <button class="btn btn-primary" type="submit">Enviar solicitud</button>
         <button class="btn trato-modal__cancel" type="button" data-close-trato-modal>Cancelar</button>
       </div>
+      <p class="trato-modal__status" aria-live="polite"></p>
     </form>
   </section>
 </div>

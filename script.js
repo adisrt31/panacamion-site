@@ -133,8 +133,80 @@ tratoModalCloseButtons.forEach((button) => {
   button.addEventListener('click', closeTratoModal);
 });
 
-tratoApplicationForm?.addEventListener('submit', (event) => {
+tratoApplicationForm?.querySelectorAll('[required]').forEach((field) => {
+  field.addEventListener('input', () => clearTratoFieldError(field));
+  field.addEventListener('change', () => clearTratoFieldError(field));
+});
+
+function setTratoFieldError(field, message) {
+  const label = field.closest('label');
+  if (!label) return;
+
+  label.classList.add('has-error');
+  let error = label.querySelector('.field-error');
+  if (!error) {
+    error = document.createElement('small');
+    error.className = 'field-error';
+    label.appendChild(error);
+  }
+  error.textContent = message;
+}
+
+function clearTratoFieldError(field) {
+  const label = field.closest('label');
+  label?.classList.remove('has-error');
+}
+
+tratoApplicationForm?.addEventListener('submit', async (event) => {
   event.preventDefault();
+  const status = tratoApplicationForm.querySelector('.trato-modal__status');
+  const submitButton = tratoApplicationForm.querySelector('button[type="submit"]');
+  const requiredFields = Array.from(tratoApplicationForm.querySelectorAll('[required]'));
+  let firstInvalid = null;
+
+  requiredFields.forEach((field) => {
+    clearTratoFieldError(field);
+    const value = String(field.value || '').trim();
+
+    if (!value) {
+      setTratoFieldError(field, 'Este campo es requerido.');
+      firstInvalid ||= field;
+      return;
+    }
+
+    if (field.type === 'email' && !field.checkValidity()) {
+      setTratoFieldError(field, 'Ingrese un correo válido.');
+      firstInvalid ||= field;
+    }
+  });
+
+  if (firstInvalid) {
+    status.textContent = 'Complete los campos marcados en rojo para enviar la solicitud.';
+    firstInvalid.focus({ preventScroll: true });
+    return;
+  }
+
+  status.textContent = 'Enviando solicitud...';
+  if (submitButton) submitButton.disabled = true;
+
+  try {
+    const response = await fetch(tratoApplicationForm.action, {
+      method: tratoApplicationForm.method || 'POST',
+      body: new FormData(tratoApplicationForm)
+    });
+    const result = await response.json().catch(() => ({}));
+
+    if (!response.ok || !result.ok) {
+      throw new Error(result.message || 'No pudimos enviar su solicitud en este momento.');
+    }
+
+    tratoApplicationForm.reset();
+    status.textContent = 'Solicitud enviada correctamente. Nuestro equipo se pondrá en contacto con usted pronto.';
+  } catch (error) {
+    status.textContent = 'No pudimos enviar su solicitud en este momento. Por favor intente nuevamente o contáctenos por WhatsApp.';
+  } finally {
+    if (submitButton) submitButton.disabled = false;
+  }
 });
 
 const lightbox = document.querySelector('.image-lightbox');
