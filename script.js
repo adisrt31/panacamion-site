@@ -317,6 +317,9 @@ document.querySelectorAll('[data-open-image]').forEach((button) => {
 });
 
 const requestForm = document.querySelector('.premium-request-form');
+const pedidosFormContent = document.querySelector('.pedidos-form-content');
+const pedidosSuccessPanel = document.querySelector('.pedidos-success');
+const newPedidosRequestButton = document.querySelector('[data-new-pedidos-request]');
 const requestTabs = document.querySelectorAll('[data-request-tab]');
 const requestPanels = document.querySelectorAll('[data-request-panel]');
 const requestPathValue = document.querySelector('[data-request-path-value]');
@@ -402,6 +405,34 @@ function clearFieldError(field) {
   label?.classList.remove('has-error');
 }
 
+function resetPedidosForm() {
+  requestForm?.reset();
+  requestForm?.classList.remove('is-success');
+  pedidosFormContent?.removeAttribute('hidden');
+  if (pedidosSuccessPanel) pedidosSuccessPanel.hidden = true;
+  requestForm?.querySelectorAll('.has-error').forEach((label) => label.classList.remove('has-error'));
+  requestForm?.querySelectorAll('.field-error').forEach((error) => error.remove());
+  requestForm?.querySelectorAll('.file-list').forEach((list) => {
+    list.innerHTML = '';
+  });
+  const status = requestForm?.querySelector('.form-status');
+  if (status) status.textContent = '';
+  syncRequestPanels('unidades');
+}
+
+function showPedidosSuccessState() {
+  requestForm?.classList.add('is-success');
+  pedidosFormContent?.setAttribute('hidden', '');
+  if (pedidosSuccessPanel) pedidosSuccessPanel.hidden = false;
+  requestForm?.querySelector('.form-status')?.replaceChildren();
+  requestForm?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  requestAnimationFrame(() => {
+    newPedidosRequestButton?.focus({ preventScroll: true });
+  });
+}
+
+newPedidosRequestButton?.addEventListener('click', resetPedidosForm);
+
 requestTabs.forEach((tab) => {
   tab.addEventListener('click', () => syncRequestPanels(tab.dataset.requestTab));
 });
@@ -482,7 +513,7 @@ requestForm?.addEventListener('submit', async (event) => {
       throw new Error(result.message || 'No pudimos enviar la solicitud en este momento.');
     }
 
-    status.textContent = 'Solicitud enviada correctamente. Hemos enviado una confirmación a su correo electrónico. Nuestro equipo se pondrá en contacto con usted dentro de 24 a 48 horas hábiles.';
+    showPedidosSuccessState();
   } catch (error) {
     status.textContent = error.message || 'No pudimos enviar la solicitud en este momento. Por favor intente nuevamente o contáctenos por WhatsApp.';
   } finally {

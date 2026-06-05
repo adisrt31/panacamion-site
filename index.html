@@ -218,78 +218,86 @@
             <p class="order-copy">Complete la información de la unidad o configuración que desea solicitar. Panacamión evaluará su pedido y coordinará opciones según aplicación, presupuesto y disponibilidad.</p>
           </div>
           <form class="request-form premium-request-form" action="/api/submit-request" method="post" enctype="multipart/form-data" novalidate>
-            <div class="request-unit-banner" aria-label="Solicitud de unidades">
-              <strong>Solicitud de unidades</strong>
-              <span>Importación personalizada según su operación.</span>
-            </div>
-            <input type="hidden" name="tipo_solicitud" value="Solicitud de unidades" data-request-path-value />
+            <div class="pedidos-form-content">
+              <div class="request-unit-banner" aria-label="Solicitud de unidades">
+                <strong>Solicitud de unidades</strong>
+                <span>Importación personalizada según su operación.</span>
+              </div>
+              <input type="hidden" name="tipo_solicitud" value="Solicitud de unidades" data-request-path-value />
 
-            <fieldset class="form-section form-card-block request-content" data-request-content hidden>
-              <legend>Datos del cliente</legend>
-              <div class="form-grid">
-                <label class="required-field">Nombre <span aria-hidden="true">*</span><input type="text" name="nombre" autocomplete="name" data-required /></label>
-                <label>Empresa <small>Opcional</small><input type="text" name="empresa" autocomplete="organization" /></label>
-                <label class="required-field">País <span aria-hidden="true">*</span><input type="text" name="pais" autocomplete="country-name" data-required /></label>
-                <label class="required-field phone-field">Teléfono <span aria-hidden="true">*</span>
-                  <div class="phone-input-group">
-                    <div class="country-code-field country-combobox" data-country-combobox>
-                      <button class="country-trigger" type="button" aria-haspopup="listbox" aria-expanded="false">
-                        <span class="phone-flag" aria-hidden="true">🌐</span>
-                        <span class="country-code-label">Código</span>
-                      </button>
-                      <input type="hidden" name="codigo_pais" data-country-code data-required />
-                      <div class="country-menu" role="listbox" hidden>
-                        <input class="country-search" type="search" placeholder="Buscar país" aria-label="Buscar país" />
-                        <div class="country-options"></div>
+              <fieldset class="form-section form-card-block request-content" data-request-content hidden>
+                <legend>Datos del cliente</legend>
+                <div class="form-grid">
+                  <label class="required-field">Nombre <span aria-hidden="true">*</span><input type="text" name="nombre" autocomplete="name" data-required /></label>
+                  <label>Empresa <small>Opcional</small><input type="text" name="empresa" autocomplete="organization" /></label>
+                  <label class="required-field">País <span aria-hidden="true">*</span><input type="text" name="pais" autocomplete="country-name" data-required /></label>
+                  <label class="required-field phone-field">Teléfono <span aria-hidden="true">*</span>
+                    <div class="phone-input-group">
+                      <div class="country-code-field country-combobox" data-country-combobox>
+                        <button class="country-trigger" type="button" aria-haspopup="listbox" aria-expanded="false">
+                          <span class="phone-flag" aria-hidden="true">🌐</span>
+                          <span class="country-code-label">Código</span>
+                        </button>
+                        <input type="hidden" name="codigo_pais" data-country-code data-required />
+                        <div class="country-menu" role="listbox" hidden>
+                          <input class="country-search" type="search" placeholder="Buscar país" aria-label="Buscar país" />
+                          <div class="country-options"></div>
+                        </div>
                       </div>
+                      <input type="tel" name="telefono" autocomplete="tel" data-required />
                     </div>
-                    <input type="tel" name="telefono" autocomplete="tel" data-required />
-                  </div>
-                </label>
-                <label class="required-field wide-field">Correo electrónico <span aria-hidden="true">*</span><input type="email" name="correo" autocomplete="email" data-required /></label>
-              </div>
-            </fieldset>
+                  </label>
+                  <label class="required-field wide-field">Correo electrónico <span aria-hidden="true">*</span><input type="email" name="correo" autocomplete="email" data-required /></label>
+                </div>
+              </fieldset>
 
-            <fieldset class="form-section form-card-block request-panel request-content" data-request-panel="unidades" data-request-content hidden>
-              <legend>Detalles de solicitud</legend>
-              <div class="form-grid">
-                <label class="required-field">Unidad <span aria-hidden="true">*</span>
-                  <select name="unidad" data-required>
-                    <option value="">Seleccione una opción</option>
-                    <option>Camión de Cabina Corta</option>
-                    <option>Camión con Dormitorio</option>
-                    <option>Camión tipo caja</option>
-                    <option>Configuración especial</option>
-                    <option>Otro</option>
-                  </select>
-                </label>
-                <label class="required-field">Marcas sugeridas <span aria-hidden="true">*</span><input type="text" name="marcas_sugeridas" data-required /></label>
-                <label class="required-field">Año sugerido <span aria-hidden="true">*</span><input type="text" name="anio_sugerido" data-required /></label>
-                <label class="required-field">Tipo de motor <span aria-hidden="true">*</span><input type="text" name="tipo_motor" data-required /></label>
-                <label class="required-field">Tipo de transmisión <span aria-hidden="true">*</span>
-                  <select name="tipo_transmision" data-required>
-                    <option value="">Seleccione una opción</option>
-                    <option>Automática</option>
-                    <option>Manual</option>
-                  </select>
-                </label>
-                <label class="required-field">País de destino <span aria-hidden="true">*</span><input type="text" name="pais_destino" data-required /></label>
-                <label class="wide-field">Comentarios <small>Opcional</small><textarea name="comentarios_unidades" rows="4"></textarea></label>
-                <label class="wide-field required-field">Subir fotos o referencias <span aria-hidden="true">*</span>
-                  <span class="upload-zone compact-upload" role="button" tabindex="0">
-                    <input id="attachments-unidades" type="file" name="attachments" accept="image/*,.pdf" multiple data-required />
-                    <span class="upload-icon" aria-hidden="true">↑</span>
-                    <span>Suba fotos, referencias o documentos de la unidad solicitada.</span>
-                    <strong>Seleccionar archivos</strong>
-                  </span>
-                </label>
-                <ul class="file-list wide-field" aria-live="polite"></ul>
-              </div>
-            </fieldset>
+              <fieldset class="form-section form-card-block request-panel request-content" data-request-panel="unidades" data-request-content hidden>
+                <legend>Detalles de solicitud</legend>
+                <div class="form-grid">
+                  <label class="required-field">Unidad <span aria-hidden="true">*</span>
+                    <select name="unidad" data-required>
+                      <option value="">Seleccione una opción</option>
+                      <option>Camión de Cabina Corta</option>
+                      <option>Camión con Dormitorio</option>
+                      <option>Camión tipo caja</option>
+                      <option>Configuración especial</option>
+                      <option>Otro</option>
+                    </select>
+                  </label>
+                  <label class="required-field">Marcas sugeridas <span aria-hidden="true">*</span><input type="text" name="marcas_sugeridas" data-required /></label>
+                  <label class="required-field">Año sugerido <span aria-hidden="true">*</span><input type="text" name="anio_sugerido" data-required /></label>
+                  <label class="required-field">Tipo de motor <span aria-hidden="true">*</span><input type="text" name="tipo_motor" data-required /></label>
+                  <label class="required-field">Tipo de transmisión <span aria-hidden="true">*</span>
+                    <select name="tipo_transmision" data-required>
+                      <option value="">Seleccione una opción</option>
+                      <option>Automática</option>
+                      <option>Manual</option>
+                    </select>
+                  </label>
+                  <label class="required-field">País de destino <span aria-hidden="true">*</span><input type="text" name="pais_destino" data-required /></label>
+                  <label class="wide-field">Comentarios <small>Opcional</small><textarea name="comentarios_unidades" rows="4"></textarea></label>
+                  <label class="wide-field required-field">Subir fotos o referencias <span aria-hidden="true">*</span>
+                    <span class="upload-zone compact-upload" role="button" tabindex="0">
+                      <input id="attachments-unidades" type="file" name="attachments" accept="image/*,.pdf" multiple data-required />
+                      <span class="upload-icon" aria-hidden="true">↑</span>
+                      <span>Suba fotos, referencias o documentos de la unidad solicitada.</span>
+                      <strong>Seleccionar archivos</strong>
+                    </span>
+                  </label>
+                  <ul class="file-list wide-field" aria-live="polite"></ul>
+                </div>
+              </fieldset>
 
-            <div class="form-actions request-content" data-request-content hidden>
-              <button class="btn btn-primary" type="submit">Solicitar pedido</button>
-              <p class="form-status" aria-live="polite"></p>
+              <div class="form-actions request-content" data-request-content hidden>
+                <button class="btn btn-primary" type="submit">Solicitar pedido</button>
+                <p class="form-status" aria-live="polite"></p>
+              </div>
+            </div>
+            <div class="pedidos-success" hidden>
+              <div class="pedidos-success__mark" aria-hidden="true">✓</div>
+              <h3>Solicitud enviada correctamente</h3>
+              <p>Hemos recibido su solicitud. Enviamos una confirmación a su correo electrónico y nuestro equipo se pondrá en contacto con usted dentro de 24 a 48 horas hábiles.</p>
+              <button class="btn btn-primary" type="button" data-new-pedidos-request>Nueva solicitud</button>
             </div>
           </form>
         </div>
