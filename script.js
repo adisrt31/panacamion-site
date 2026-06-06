@@ -19,6 +19,7 @@ function setMenu(open) {
   document.body.classList.toggle("nav-open", open);
   if (toggle) {
     toggle.setAttribute("aria-expanded", String(open));
+    toggle.setAttribute("aria-label", open ? "Cerrar menú" : "Abrir menú");
     toggle.textContent = open ? "×" : "☰";
   }
 }
@@ -36,6 +37,14 @@ menuLinks.forEach((link) => {
 });
 
 window.addEventListener("resize", () => setMenu(false));
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && document.body.classList.contains("nav-open")) {
+    setMenu(false);
+    toggle?.focus({ preventScroll: true });
+  }
+});
+
 document.querySelectorAll('[data-gallery]').forEach((gallery) => {
   const slides = gallery.querySelectorAll('.gallery-slide');
   const dots = gallery.querySelectorAll('.gallery-dot');
@@ -143,7 +152,7 @@ function resetTratoModal() {
   tratoApplicationForm?.classList.remove('is-hidden');
   tratoModalPanel?.classList.remove('is-success');
   if (tratoSuccessPanel) tratoSuccessPanel.hidden = true;
-  tratoApplicationForm?.querySelectorAll('.has-error').forEach((label) => label.classList.remove('has-error'));
+  tratoApplicationForm?.querySelectorAll('input, select, textarea').forEach((field) => clearTratoFieldError(field));
   const status = tratoApplicationForm?.querySelector('.trato-modal__status');
   if (status) status.textContent = '';
 }
@@ -199,11 +208,14 @@ function setTratoFieldError(field, message) {
     label.appendChild(error);
   }
   error.textContent = message;
+  setAccessibleFieldError(field, error);
 }
 
 function clearTratoFieldError(field) {
   const label = field.closest('label');
-  label?.classList.remove('has-error');
+  const error = label?.querySelector('.field-error');
+  clearAccessibleFieldError(field, error);
+  if (!label?.querySelector('[aria-invalid="true"]')) label?.classList.remove('has-error');
 }
 
 tratoApplicationForm?.addEventListener('submit', async (event) => {
@@ -267,6 +279,36 @@ const lightboxPrev = document.querySelector('.lightbox-prev');
 const lightboxNext = document.querySelector('.lightbox-next');
 let lightboxSlides = [];
 let lightboxIndex = 0;
+let lastLightboxTrigger = null;
+
+function getFocusableElements(container) {
+  if (!container) return [];
+
+  return Array.from(container.querySelectorAll(
+    'a[href], button:not([disabled]), input:not([disabled]):not([type="hidden"]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+  )).filter((element) => element.getClientRects().length > 0 && element.getAttribute('aria-hidden') !== 'true');
+}
+
+function trapFocus(event, container) {
+  if (event.key !== 'Tab') return;
+
+  const focusable = getFocusableElements(container);
+  if (!focusable.length) {
+    event.preventDefault();
+    container?.focus({ preventScroll: true });
+    return;
+  }
+
+  const first = focusable[0];
+  const last = focusable[focusable.length - 1];
+  if (event.shiftKey && document.activeElement === first) {
+    event.preventDefault();
+    last.focus();
+  } else if (!event.shiftKey && document.activeElement === last) {
+    event.preventDefault();
+    first.focus();
+  }
+}
 
 function showLightboxImage(index) {
   if (!lightboxImage || !lightboxSlides.length) return;
@@ -279,9 +321,26 @@ function showLightboxImage(index) {
 }
 
 function closeLightbox() {
+  if (!lightbox?.classList.contains('is-open')) return;
+
   lightbox?.classList.remove('is-open');
   lightbox?.classList.remove('is-product-zoom');
   lightbox?.setAttribute('aria-hidden', 'true');
+  document.body.classList.remove('lightbox-open');
+  if (lastLightboxTrigger instanceof HTMLElement) {
+    lastLightboxTrigger.focus({ preventScroll: true });
+  }
+  lastLightboxTrigger = null;
+}
+
+function openLightbox(trigger) {
+  if (!lightbox) return;
+
+  lastLightboxTrigger = trigger instanceof HTMLElement ? trigger : document.activeElement;
+  document.body.classList.add('lightbox-open');
+  lightbox.classList.add('is-open');
+  lightbox.setAttribute('aria-hidden', 'false');
+  lightboxClose?.focus({ preventScroll: true });
 }
 
 document.querySelectorAll('.gallery-track').forEach((track) => {
@@ -292,8 +351,7 @@ document.querySelectorAll('.gallery-track').forEach((track) => {
 
     lightboxSlides = slides;
     showLightboxImage(activeIndex >= 0 ? activeIndex : 0);
-    lightbox.classList.add('is-open');
-    lightbox.setAttribute('aria-hidden', 'false');
+    openLightbox(track);
   });
 });
 
@@ -301,12 +359,15 @@ lightboxPrev?.addEventListener('click', () => showLightboxImage(lightboxIndex - 
 lightboxNext?.addEventListener('click', () => showLightboxImage(lightboxIndex + 1));
 lightboxClose?.addEventListener('click', closeLightbox);
 lightbox?.addEventListener('click', (event) => {
-  if (event.target === lightbox) closeLightbox();
+  const clickedContent = event.target.closest('.lightbox-scroll img, .lightbox-close, .lightbox-nav');
+  if (!clickedContent) closeLightbox();
 });
 
 document.addEventListener('keydown', (event) => {
   if (event.key === 'Escape' && tratoModal?.classList.contains('is-open')) closeTratoModal();
-  if (event.key === 'Escape') closeLightbox();
+  if (event.key === 'Escape' && lightbox?.classList.contains('is-open')) closeLightbox();
+  if (lightbox?.classList.contains('is-open')) trapFocus(event, lightbox);
+  if (tratoModal?.classList.contains('is-open')) trapFocus(event, tratoModalPanel);
   if (lightbox?.classList.contains('is-open') && event.key === 'ArrowLeft') showLightboxImage(lightboxIndex - 1);
   if (lightbox?.classList.contains('is-open') && event.key === 'ArrowRight') showLightboxImage(lightboxIndex + 1);
 });
@@ -336,8 +397,7 @@ document.querySelectorAll('[data-open-image]').forEach((button) => {
       productZoom: true
     }];
     showLightboxImage(0);
-    lightbox.classList.add('is-open');
-    lightbox.setAttribute('aria-hidden', 'false');
+    openLightbox(button);
   });
 });
 
@@ -406,15 +466,65 @@ function getFieldLabel(field) {
   return field.closest('label');
 }
 
-function ensureErrorNode(label) {
-  let error = label?.querySelector('.field-error');
+let fieldErrorId = 0;
+
+function getFieldErrorNode(field) {
+  const errorId = field.dataset.validationErrorId;
+  return errorId ? document.getElementById(errorId) : null;
+}
+
+function ensureErrorNode(label, field) {
+  let error = getFieldErrorNode(field);
   if (!error && label) {
+    fieldErrorId += 1;
     error = document.createElement('small');
     error.className = 'field-error';
+    error.id = `field-error-${fieldErrorId}`;
     error.textContent = 'Este campo es requerido.';
+    field.dataset.validationErrorId = error.id;
     label.appendChild(error);
   }
   return error;
+}
+
+function addDescribedBy(field, id) {
+  const ids = new Set((field.getAttribute('aria-describedby') || '').split(/\s+/).filter(Boolean));
+  ids.add(id);
+  field.setAttribute('aria-describedby', Array.from(ids).join(' '));
+}
+
+function removeDescribedBy(field, id) {
+  const ids = (field.getAttribute('aria-describedby') || '')
+    .split(/\s+/)
+    .filter((value) => value && value !== id);
+  if (ids.length) field.setAttribute('aria-describedby', ids.join(' '));
+  else field.removeAttribute('aria-describedby');
+}
+
+function setAccessibleFieldError(field, error) {
+  if (!error.id) {
+    fieldErrorId += 1;
+    error.id = `field-error-${fieldErrorId}`;
+  }
+  field.dataset.validationErrorId = error.id;
+
+  field.setAttribute('aria-invalid', 'true');
+  addDescribedBy(field, error.id);
+
+  if (field.matches('[data-country-code]')) {
+    countryTrigger?.setAttribute('aria-invalid', 'true');
+    addDescribedBy(countryTrigger, error.id);
+  }
+}
+
+function clearAccessibleFieldError(field, error) {
+  field.removeAttribute('aria-invalid');
+  if (error?.id) removeDescribedBy(field, error.id);
+
+  if (field.matches('[data-country-code]')) {
+    countryTrigger?.removeAttribute('aria-invalid');
+    if (error?.id) removeDescribedBy(countryTrigger, error.id);
+  }
 }
 
 function setFieldError(field, message) {
@@ -422,13 +532,18 @@ function setFieldError(field, message) {
   if (!label) return;
 
   label.classList.add('has-error');
-  const error = ensureErrorNode(label);
-  if (error) error.textContent = message;
+  const error = ensureErrorNode(label, field);
+  if (error) {
+    error.textContent = message;
+    setAccessibleFieldError(field, error);
+  }
 }
 
 function clearFieldError(field) {
   const label = getFieldLabel(field);
-  label?.classList.remove('has-error');
+  const error = getFieldErrorNode(field);
+  clearAccessibleFieldError(field, error);
+  if (!label?.querySelector('[aria-invalid="true"]')) label?.classList.remove('has-error');
 }
 
 function resetPedidosForm() {
@@ -436,7 +551,7 @@ function resetPedidosForm() {
   requestForm?.classList.remove('is-success');
   pedidosFormContent?.removeAttribute('hidden');
   if (pedidosSuccessPanel) pedidosSuccessPanel.hidden = true;
-  requestForm?.querySelectorAll('.has-error').forEach((label) => label.classList.remove('has-error'));
+  requestForm?.querySelectorAll('input, select, textarea').forEach((field) => clearFieldError(field));
   requestForm?.querySelectorAll('.field-error').forEach((error) => error.remove());
   requestForm?.querySelectorAll('.file-list').forEach((list) => {
     list.innerHTML = '';
@@ -660,15 +775,37 @@ function openCountryMenu() {
   countryTrigger.setAttribute('aria-expanded', 'true');
   renderCountryOptions(countrySearch?.value || '');
 
-  const rect = countryTrigger.getBoundingClientRect();
-  const panelWidth = Math.min(320, window.innerWidth - 32);
-  const left = Math.max(16, Math.min(rect.left, window.innerWidth - panelWidth - 16));
-  const top = Math.min(rect.bottom + 10, window.innerHeight - 330);
-  countryMenu.style.setProperty('--country-menu-left', `${left}px`);
-  countryMenu.style.setProperty('--country-menu-top', `${Math.max(16, top)}px`);
-  countryMenu.style.setProperty('--country-menu-width', `${panelWidth}px`);
+  positionCountryMenu();
 
-  setTimeout(() => countrySearch?.focus(), 0);
+  setTimeout(() => {
+    countrySearch?.focus();
+    positionCountryMenu();
+  }, 0);
+}
+
+function positionCountryMenu() {
+  if (!countryMenu || countryMenu.hidden || !countryTrigger) return;
+
+  const viewport = window.visualViewport;
+  const viewportWidth = viewport?.width || window.innerWidth;
+  const viewportHeight = viewport?.height || window.innerHeight;
+  const viewportLeft = viewport?.offsetLeft || 0;
+  const viewportTop = viewport?.offsetTop || 0;
+  const rect = countryTrigger.getBoundingClientRect();
+  const panelWidth = Math.min(320, viewportWidth - 32);
+  const left = Math.max(
+    viewportLeft + 16,
+    Math.min(rect.left, viewportLeft + viewportWidth - panelWidth - 16)
+  );
+  const preferredTop = rect.bottom + 10;
+  const top = Math.max(
+    viewportTop + 16,
+    Math.min(preferredTop, viewportTop + viewportHeight - 326)
+  );
+
+  countryMenu.style.setProperty('--country-menu-left', `${left}px`);
+  countryMenu.style.setProperty('--country-menu-top', `${top}px`);
+  countryMenu.style.setProperty('--country-menu-width', `${panelWidth}px`);
 }
 
 function closeCountryMenu() {
@@ -698,7 +835,14 @@ document.addEventListener('click', (event) => {
 });
 
 document.addEventListener('keydown', (event) => {
-  if (event.key === 'Escape') closeCountryMenu();
+  if (event.key === 'Escape' && countryMenu && !countryMenu.hidden) {
+    closeCountryMenu();
+    countryTrigger?.focus({ preventScroll: true });
+  }
 });
+
+window.visualViewport?.addEventListener('resize', positionCountryMenu);
+window.visualViewport?.addEventListener('scroll', positionCountryMenu);
+window.addEventListener('orientationchange', positionCountryMenu);
 
 renderCountryOptions();
